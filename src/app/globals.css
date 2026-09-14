@@ -144,15 +144,21 @@
 
 /* Hero — full-bleed image scrim, gradient headline, floating card */
 .hero-scrim {
-  background:
-    linear-gradient(
-      90deg,
-      var(--background) 0%,
-      color-mix(in oklch, var(--background) 92%, transparent) 32%,
-      color-mix(in oklch, var(--background) 45%, transparent) 58%,
-      transparent 80%
-    ),
-    linear-gradient(0deg, var(--background) 0%, transparent 30%);
+  background: color-mix(in oklch, var(--background) 90%, transparent);
+}
+
+@media (min-width: 640px) {
+  .hero-scrim {
+    background:
+      linear-gradient(
+        90deg,
+        var(--background) 0%,
+        color-mix(in oklch, var(--background) 92%, transparent) 32%,
+        color-mix(in oklch, var(--background) 45%, transparent) 58%,
+        transparent 80%
+      ),
+      linear-gradient(0deg, var(--background) 0%, transparent 30%);
+  }
 }
 
 .hero-gradient-text {
