@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Handshake } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/page-hero";
+import { Reveal } from "@/components/reveal";
 import { partners } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
@@ -21,18 +22,17 @@ export default function ParceirosPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {partners.map((partner) => (
-            <div
-              key={partner.name}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-5"
-            >
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-gidib-navy/5 text-gidib-navy">
-                <Handshake className="size-5" />
+          {partners.map((partner, i) => (
+            <Reveal key={partner.name} delay={i * 60}>
+              <div className="group flex items-center gap-3 rounded-xl border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-gidib-green/40 hover:shadow-lg hover:shadow-gidib-navy/10">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-gidib-navy/5 text-gidib-navy transition-colors duration-300 group-hover:bg-gidib-green/10 group-hover:text-gidib-green">
+                  <Handshake className="size-5" />
+                </div>
+                <p className="text-sm font-semibold text-foreground">
+                  {partner.name}
+                </p>
               </div>
-              <p className="text-sm font-semibold text-foreground">
-                {partner.name}
-              </p>
-            </div>
+            </Reveal>
           ))}
         </div>
 

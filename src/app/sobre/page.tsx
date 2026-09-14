@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Cpu, Factory, Lightbulb, Users } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
+import { Reveal } from "@/components/reveal";
 import { stats } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
@@ -15,21 +16,25 @@ const pillars = [
     icon: Users,
     title: "Qualificação profissional",
     description: "Capacitando pessoas para o futuro da indústria.",
+    accent: "bg-gidib-green/10 text-gidib-green",
   },
   {
     icon: Lightbulb,
     title: "Inovação e tecnologia",
     description: "Estimulando soluções para uma indústria mais competitiva.",
+    accent: "bg-gidib-blue/10 text-gidib-blue",
   },
   {
     icon: Factory,
     title: "Desenvolvimento da indústria",
     description: "Conectando ideias, projetos e pessoas.",
+    accent: "bg-gidib-yellow/15 text-gidib-navy",
   },
   {
     icon: Cpu,
     title: "Impacto social",
     description: "Contribuindo para uma sociedade mais preparada.",
+    accent: "bg-gidib-navy/10 text-gidib-navy",
   },
 ];
 
@@ -80,21 +85,22 @@ export default function SobrePage() {
             Nossos pilares
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {pillars.map(({ icon: Icon, title, description }) => (
-              <div
-                key={title}
-                className="rounded-xl border border-border bg-card p-6"
-              >
-                <div className="flex size-11 items-center justify-center rounded-lg bg-gidib-green/10 text-gidib-green">
-                  <Icon className="size-5" />
+            {pillars.map(({ icon: Icon, title, description, accent }, i) => (
+              <Reveal key={title} delay={i * 80}>
+                <div className="group h-full rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gidib-navy/10">
+                  <div
+                    className={`flex size-11 items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110 ${accent}`}
+                  >
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="mt-4 text-sm font-semibold text-foreground">
+                    {title}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {description}
+                  </p>
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-foreground">
-                  {title}
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {description}
-                </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -102,15 +108,17 @@ export default function SobrePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-3xl font-extrabold text-gidib-green">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {stat.label}
-              </p>
-            </div>
+          {stats.map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 80}>
+              <div className="text-center transition-transform duration-300 hover:-translate-y-1">
+                <p className="text-3xl font-extrabold tabular-nums text-gidib-green">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {stat.label}
+                </p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>

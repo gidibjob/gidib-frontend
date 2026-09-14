@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Link2, MessageCircle, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PostCard } from "@/components/blog/post-card";
+import { Reveal } from "@/components/reveal";
+import { categoryBadgeClass } from "@/lib/category-styles";
 import { getPostBySlug, getRelatedPosts, posts } from "@/lib/mock-data";
 
 type Props = {
@@ -53,7 +55,7 @@ export default async function ArticlePage({ params }: Props) {
         <span className="text-foreground">{post.category}</span>
       </nav>
 
-      <Badge className="mt-4 bg-gidib-navy text-white hover:bg-gidib-navy">
+      <Badge className={`mt-4 hover:opacity-100 ${categoryBadgeClass(post.category)}`}>
         {post.category.toUpperCase()}
       </Badge>
 
@@ -93,7 +95,7 @@ export default async function ArticlePage({ params }: Props) {
               <Link
                 key={related.slug}
                 href={`/blog/${related.slug}`}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-gidib-green"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-gidib-green hover:underline hover:underline-offset-4"
               >
                 {related.title}
               </Link>
@@ -118,7 +120,7 @@ export default async function ArticlePage({ params }: Props) {
               type="button"
               aria-label={label}
               title={label}
-              className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-gidib-green hover:text-gidib-green"
+              className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-gidib-green hover:text-gidib-green hover:shadow-md hover:shadow-gidib-green/15"
             >
               <Icon className="size-4" />
             </button>
@@ -132,8 +134,10 @@ export default async function ArticlePage({ params }: Props) {
             Artigos relacionados
           </h2>
           <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {relatedPosts.slice(0, 3).map((related) => (
-              <PostCard key={related.slug} post={related} />
+            {relatedPosts.slice(0, 3).map((related, i) => (
+              <Reveal key={related.slug} delay={i * 80}>
+                <PostCard post={related} />
+              </Reveal>
             ))}
           </div>
         </div>

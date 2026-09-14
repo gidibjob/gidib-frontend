@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CalendarX2 } from "lucide-react";
 import { EventCard } from "@/components/events/event-card";
+import { Reveal } from "@/components/reveal";
 import { events } from "@/lib/mock-data";
 import type { EventModality } from "@/types/content";
 
@@ -33,9 +35,9 @@ export function EventosPageClient() {
           <button
             key={filter}
             onClick={() => setActiveFilter(filter)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
               activeFilter === filter
-                ? "border-gidib-green bg-gidib-green text-white"
+                ? "border-gidib-green bg-gidib-green text-white shadow-md shadow-gidib-green/20"
                 : "border-border bg-background text-muted-foreground hover:border-gidib-green hover:text-gidib-green"
             }`}
           >
@@ -46,14 +48,21 @@ export function EventosPageClient() {
 
       {filteredEvents.length > 0 ? (
         <div className="mt-8 grid gap-4">
-          {filteredEvents.map((event) => (
-            <EventCard key={event.slug} event={event} />
+          {filteredEvents.map((event, i) => (
+            <Reveal key={event.slug} delay={i * 60}>
+              <EventCard event={event} />
+            </Reveal>
           ))}
         </div>
       ) : (
-        <p className="mt-16 text-center text-sm text-muted-foreground">
-          Nenhum evento encontrado para esse filtro.
-        </p>
+        <div className="mt-16 flex flex-col items-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <CalendarX2 className="size-5" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Nenhum evento encontrado para esse filtro.
+          </p>
+        </div>
       )}
     </>
   );

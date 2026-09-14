@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, SearchX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
+import { Reveal } from "@/components/reveal";
 import { categories, posts } from "@/lib/mock-data";
 
 const PAGE_SIZE = 6;
@@ -47,9 +48,9 @@ export function BlogPageClient() {
                 setActiveFilter(filter);
                 setVisibleCount(PAGE_SIZE);
               }}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
                 activeFilter === filter
-                  ? "border-gidib-green bg-gidib-green text-white"
+                  ? "border-gidib-green bg-gidib-green text-white shadow-md shadow-gidib-green/20"
                   : "border-border bg-background text-muted-foreground hover:border-gidib-green hover:text-gidib-green"
               }`}
             >
@@ -67,27 +68,35 @@ export function BlogPageClient() {
               setVisibleCount(PAGE_SIZE);
             }}
             placeholder="Buscar artigos..."
-            className="pl-9"
+            className="pl-9 focus-visible:border-gidib-green"
           />
         </div>
       </div>
 
       {visiblePosts.length > 0 ? (
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {visiblePosts.map((post) => (
-            <PostCard key={post.slug} post={post} />
+          {visiblePosts.map((post, i) => (
+            <Reveal key={post.slug} delay={(i % PAGE_SIZE) * 60}>
+              <PostCard post={post} />
+            </Reveal>
           ))}
         </div>
       ) : (
-        <p className="mt-16 text-center text-sm text-muted-foreground">
-          Nenhum artigo encontrado para essa busca.
-        </p>
+        <div className="mt-16 flex flex-col items-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <SearchX className="size-5" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Nenhum artigo encontrado para essa busca.
+          </p>
+        </div>
       )}
 
       {hasMore && (
         <div className="mt-10 flex justify-center">
           <Button
             variant="outline"
+            className="hover:border-gidib-green hover:text-gidib-green"
             onClick={() => setVisibleCount((v) => v + PAGE_SIZE)}
           >
             Carregar mais artigos

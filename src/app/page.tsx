@@ -12,6 +12,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
+import { Reveal } from "@/components/reveal";
 import { events, posts, stats } from "@/lib/mock-data";
 
 const statIcons = [Users, FileText, CalendarDays, Network];
@@ -20,24 +21,27 @@ const pillars = [
   {
     icon: Users,
     title: "Qualificação profissional",
-    description:
-      "Capacitando pessoas para o futuro da indústria.",
+    description: "Capacitando pessoas para o futuro da indústria.",
+    accent: "bg-gidib-green/10 text-gidib-green",
   },
   {
     icon: Lightbulb,
     title: "Inovação e tecnologia",
     description:
       "Estimulando soluções para uma indústria mais competitiva.",
+    accent: "bg-gidib-blue/10 text-gidib-blue",
   },
   {
     icon: Factory,
     title: "Desenvolvimento da indústria",
     description: "Conectando ideias, projetos e pessoas.",
+    accent: "bg-gidib-yellow/15 text-gidib-navy",
   },
   {
     icon: Cpu,
     title: "Impacto social",
     description: "Contribuindo para uma sociedade mais preparada.",
+    accent: "bg-gidib-navy/10 text-gidib-navy",
   },
 ];
 
@@ -114,21 +118,22 @@ export default function Home() {
       {/* Pilares */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map(({ icon: Icon, title, description }) => (
-            <div
-              key={title}
-              className="rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md"
-            >
-              <div className="flex size-11 items-center justify-center rounded-lg bg-gidib-green/10 text-gidib-green">
-                <Icon className="size-5" />
+          {pillars.map(({ icon: Icon, title, description, accent }, i) => (
+            <Reveal key={title} delay={i * 80}>
+              <div className="group h-full rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gidib-navy/10">
+                <div
+                  className={`flex size-11 items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110 ${accent}`}
+                >
+                  <Icon className="size-5" />
+                </div>
+                <h3 className="mt-4 text-sm font-semibold text-foreground">
+                  {title}
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {description}
+                </p>
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-foreground">
-                {title}
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {description}
-              </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -145,8 +150,10 @@ export default function Home() {
           </div>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
+            {featuredPosts.map((post, i) => (
+              <Reveal key={post.slug} delay={i * 80}>
+                <PostCard post={post} />
+              </Reveal>
             ))}
           </div>
 
@@ -164,8 +171,10 @@ export default function Home() {
           Próximos eventos
         </h2>
         <div className="mt-8 grid gap-4">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.slug} event={event} />
+          {upcomingEvents.map((event, i) => (
+            <Reveal key={event.slug} delay={i * 80}>
+              <EventCard event={event} />
+            </Reveal>
           ))}
         </div>
         <div className="mt-10 flex justify-center">
@@ -197,20 +206,19 @@ export default function Home() {
               {stats.map((stat, i) => {
                 const Icon = statIcons[i];
                 return (
-                  <div
-                    key={stat.label}
-                    className="rounded-2xl border border-border bg-background p-4 text-center"
-                  >
-                    <div className="mx-auto flex size-9 items-center justify-center rounded-lg bg-gidib-green/10 text-gidib-green">
-                      <Icon className="size-4" />
+                  <Reveal key={stat.label} delay={i * 80}>
+                    <div className="group rounded-2xl border border-border bg-background p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gidib-green/40 hover:shadow-lg">
+                      <div className="mx-auto flex size-9 items-center justify-center rounded-lg bg-gidib-green/10 text-gidib-green transition-transform duration-300 group-hover:scale-110">
+                        <Icon className="size-4" />
+                      </div>
+                      <p className="mt-2 text-lg font-extrabold tabular-nums text-foreground">
+                        {stat.value}
+                      </p>
+                      <p className="text-[11px] leading-tight text-muted-foreground">
+                        {stat.label}
+                      </p>
                     </div>
-                    <p className="mt-2 text-lg font-extrabold text-foreground">
-                      {stat.value}
-                    </p>
-                    <p className="text-[11px] leading-tight text-muted-foreground">
-                      {stat.label}
-                    </p>
-                  </div>
+                  </Reveal>
                 );
               })}
             </div>
