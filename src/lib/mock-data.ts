@@ -162,6 +162,45 @@ export const events: Event[] = [
   },
 ];
 
+export const projects = [
+  {
+    slug: "industria-4-0-para-todos",
+    title: "Indústria 4.0 para todos",
+    description:
+      "Programa de capacitação em tecnologias de automação e digitalização para profissionais da indústria.",
+    category: "Qualificação",
+    image:
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&q=80",
+  },
+  {
+    slug: "mapa-da-inovacao-industrial",
+    title: "Mapa da Inovação Industrial",
+    description:
+      "Levantamento e mapeamento de iniciativas inovadoras na indústria brasileira.",
+    category: "Inovação",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+  },
+  {
+    slug: "industria-verde-e-amarela",
+    title: "Indústria Verde e Amarela",
+    description:
+      "Iniciativa voltada para práticas sustentáveis e responsabilidade ambiental no setor industrial.",
+    category: "Sustentabilidade",
+    image:
+      "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&q=80",
+  },
+];
+
+export const partners = [
+  { name: "Instituto Nacional da Indústria" },
+  { name: "Federação Brasileira de Tecnologia" },
+  { name: "Associação de Engenharia Industrial" },
+  { name: "Câmara de Inovação Brasileira" },
+  { name: "Rede de Qualificação Profissional" },
+  { name: "Fórum da Indústria 4.0" },
+];
+
 export const stats = [
   { value: "+500", label: "Profissionais impactados" },
   { value: "+50", label: "Conteúdos publicados" },
