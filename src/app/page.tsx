@@ -12,7 +12,6 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
-import { BrazilOutline } from "@/components/brazil-outline";
 import { events, posts, stats } from "@/lib/mock-data";
 
 const statIcons = [Users, FileText, CalendarDays, Network];
@@ -214,37 +213,6 @@ export default function Home() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          <div className="relative flex flex-col gap-6 bg-gidib-navy px-8 pb-8 pt-12 text-white sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:pt-14">
-            <svg
-              className="absolute inset-x-0 top-0 -mt-px h-6 w-full text-card sm:h-8"
-              viewBox="0 0 1440 60"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path
-                fill="currentColor"
-                d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,32 L1440,0 L0,0 Z"
-              />
-            </svg>
-
-            <p className="max-w-md text-lg font-semibold leading-snug">
-              <span className="mb-3 block h-0.5 w-10 bg-gidib-green" />
-              &ldquo;Conhecimento transforma pessoas.
-              <br />
-              Pessoas transformam a indústria.&rdquo;
-            </p>
-
-            <div className="flex items-center gap-4">
-              <BrazilOutline className="size-14 shrink-0 text-gidib-green" />
-              <div>
-                <p className="text-lg font-extrabold">GIDIB</p>
-                <p className="text-xs text-white/70">
-                  Juntos por uma indústria brasileira mais forte.
-                </p>
-              </div>
             </div>
           </div>
         </div>
