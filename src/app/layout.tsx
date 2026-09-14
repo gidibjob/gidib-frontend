@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   },
   description:
     "Inovação, conhecimento e pessoas para uma indústria brasileira mais forte e sustentável.",
+  icons: {
+    icon: "/logo-gidib.jpeg",
+    apple: "/logo-gidib.jpeg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
