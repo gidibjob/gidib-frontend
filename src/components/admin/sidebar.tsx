@@ -22,7 +22,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-white/10 bg-gidib-navy text-white lg:flex">
+    <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r border-white/10 bg-gidib-navy text-white lg:flex">
       <div className="flex h-16 items-center gap-2 px-5">
         <Image
           src="/logo-gidib.jpeg"
