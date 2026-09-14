@@ -49,46 +49,41 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-background">
+      <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden bg-background">
         <div className="hero-glow pointer-events-none absolute inset-0" />
 
-        <div className="relative mx-auto grid max-w-7xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-28">
+        <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-14 lg:px-8 lg:py-20">
           <div className="relative z-10">
-            <span className="hero-badge">
-              <span className="hero-badge-dot" />
-              Grupo de Inovação e Desenvolvimento da Indústria Brasileira
-            </span>
-
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               <span className="block">Inovação, conhecimento</span>
               <span className="hero-gradient-text block">
                 e pessoas para o futuro da indústria.
               </span>
             </h1>
 
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
               Transformando o Brasil por meio da conscientização,
               qualificação e desenvolvimento dos profissionais da indústria
               verde e amarela.
             </p>
 
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:gap-4">
               <Button
                 size="lg"
-                className="btn-hero-primary bg-gidib-green hover:bg-gidib-green-dark"
+                className="btn-hero-primary w-full bg-gidib-green hover:bg-gidib-green-dark sm:w-auto"
               >
                 Conheça a GIDIB
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="btn-hero-outline hover:border-gidib-green hover:text-gidib-green"
+                className="btn-hero-outline w-full hover:border-gidib-green hover:text-gidib-green sm:w-auto"
               >
                 Associe-se agora
               </Button>
             </div>
 
-            <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border/60 pt-8">
+            <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/60 pt-6 sm:mt-14 sm:flex sm:flex-wrap sm:items-center sm:gap-x-8 sm:pt-8">
               {[
                 { icon: Cpu, label: "Tecnologia" },
                 { icon: Users, label: "Pessoas" },
@@ -99,8 +94,8 @@ export default function Home() {
                   key={label}
                   className="flex items-center gap-2 text-sm text-muted-foreground"
                 >
-                  <Icon className="size-4 text-gidib-green" />
-                  {label}
+                  <Icon className="size-4 shrink-0 text-gidib-green" />
+                  <span className="truncate">{label}</span>
                 </div>
               ))}
             </div>
