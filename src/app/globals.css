@@ -144,7 +144,12 @@
 
 /* Hero — full-bleed image scrim, gradient headline, floating card */
 .hero-scrim {
-  background: color-mix(in oklch, var(--background) 90%, transparent);
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklch, var(--background) 55%, transparent) 0%,
+    color-mix(in oklch, var(--background) 35%, transparent) 55%,
+    color-mix(in oklch, var(--background) 55%, transparent) 100%
+  );
 }
 
 @media (min-width: 640px) {

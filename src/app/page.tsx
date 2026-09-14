@@ -62,7 +62,7 @@ export default function Home() {
         <div className="hero-scrim absolute inset-0" />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-xl">
+          <div className="max-w-xl rounded-3xl bg-background/75 p-6 backdrop-blur-md sm:rounded-none sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
             <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               <span className="block">Inovação, conhecimento</span>
               <span className="hero-gradient-text block">
