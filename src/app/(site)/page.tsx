@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative -mt-16 flex min-h-svh items-center overflow-hidden">
+      <section className="relative -mt-18 flex min-h-svh items-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1920&q=80"
