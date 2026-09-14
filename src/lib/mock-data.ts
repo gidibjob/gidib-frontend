@@ -205,7 +205,7 @@ export const stats = [
   { value: "+500", label: "Profissionais impactados" },
   { value: "+50", label: "Conteúdos publicados" },
   { value: "+20", label: "Eventos realizados" },
-  { value: "+30", label: "Parceiros" },
+  { value: "+30", label: "Parceiros estratégicos" },
 ];
 
 export function getPostBySlug(slug: string) {

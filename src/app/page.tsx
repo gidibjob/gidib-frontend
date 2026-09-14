@@ -1,10 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Cpu, Factory, Lightbulb, Users } from "lucide-react";
+import {
+  CalendarDays,
+  Cpu,
+  Factory,
+  FileText,
+  Lightbulb,
+  Network,
+  Users,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
+import { BrazilOutline } from "@/components/brazil-outline";
 import { events, posts, stats } from "@/lib/mock-data";
+
+const statIcons = [Users, FileText, CalendarDays, Network];
 
 const pillars = [
   {
@@ -183,48 +194,64 @@ export default function Home() {
       </section>
 
       {/* Números */}
-      <section className="bg-muted/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-            Uma indústria brasileira mais preparada para o futuro.
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            A GIDIB promove iniciativas, conteúdos e parcerias que impulsionam
-            o desenvolvimento da indústria com foco em pessoas, tecnologia e
-            sustentabilidade.
-          </p>
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+          <div className="grid gap-10 p-8 sm:p-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+                Uma indústria brasileira mais preparada para o futuro.
+              </h2>
+              <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                A GIDIB promove iniciativas, conteúdos e parcerias que
+                impulsionam o desenvolvimento da indústria com foco em
+                pessoas, tecnologia e sustentabilidade.
+              </p>
+              <Button className="mt-6 bg-gidib-green hover:bg-gidib-green-dark">
+                Saiba mais
+              </Button>
+            </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center sm:text-left">
-                <p className="text-3xl font-extrabold text-gidib-green">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {stat.label}
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {stats.map((stat, i) => {
+                const Icon = statIcons[i];
+                return (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-border bg-background p-4 text-center"
+                  >
+                    <div className="mx-auto flex size-9 items-center justify-center rounded-lg bg-gidib-green/10 text-gidib-green">
+                      <Icon className="size-4" />
+                    </div>
+                    <p className="mt-2 text-lg font-extrabold text-foreground">
+                      {stat.value}
+                    </p>
+                    <p className="text-[11px] leading-tight text-muted-foreground">
+                      {stat.label}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-6 bg-gidib-navy px-8 py-8 text-white sm:flex-row sm:items-center sm:justify-between sm:px-10">
+            <p className="max-w-md text-lg font-semibold leading-snug">
+              <span className="mb-3 block h-0.5 w-10 bg-gidib-green" />
+              &ldquo;Conhecimento transforma pessoas.
+              <br />
+              Pessoas transformam a indústria.&rdquo;
+            </p>
+
+            <div className="flex items-center gap-4">
+              <BrazilOutline className="size-14 shrink-0 text-gidib-green" />
+              <div>
+                <p className="text-lg font-extrabold">GIDIB</p>
+                <p className="text-xs text-white/70">
+                  Juntos por uma indústria brasileira mais forte.
                 </p>
               </div>
-            ))}
+            </div>
           </div>
-
-          <div className="mt-8">
-            <Button className="bg-gidib-green hover:bg-gidib-green-dark">
-              Saiba mais
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA institucional */}
-      <section className="bg-gidib-navy py-14 text-white">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-          <p className="text-xl font-semibold italic">
-            &ldquo;Conhecimento transforma pessoas. Pessoas transformam a
-            indústria.&rdquo;
-          </p>
-          <Button className="bg-gidib-yellow text-gidib-navy hover:bg-gidib-yellow/90">
-            Conheça a GIDIB
-          </Button>
         </div>
       </section>
     </>
