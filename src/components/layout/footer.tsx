@@ -75,6 +75,12 @@ export function Footer() {
             &ldquo;Conhecimento transforma pessoas. Pessoas transformam a
             indústria.&rdquo;
           </p>
+          <Link
+            href="/admin/login"
+            className="text-xs text-white/40 transition-colors hover:text-white/70"
+          >
+            Área restrita
+          </Link>
         </div>
       </div>
     </footer>
