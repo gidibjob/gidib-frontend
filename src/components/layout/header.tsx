@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/layout/logo";
@@ -18,29 +18,46 @@ const NAV_LINKS = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled || open
+          ? "border-b border-border/60 bg-background/95 shadow-sm backdrop-blur-md"
+          : "border-b border-transparent bg-background/45 backdrop-blur-md"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-gidib-navy"
+              className="text-[13px] font-medium tracking-wide text-foreground/70 transition-colors hover:text-gidib-green"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           <Button variant="ghost" size="icon" aria-label="Buscar">
             <Search className="size-4" />
           </Button>
-          <Button className="bg-gidib-green hover:bg-gidib-green-dark">
+          <Button
+            size="sm"
+            className="btn-hero-primary ml-2 bg-gidib-green px-4 hover:bg-gidib-green-dark"
+          >
             Associe-se
           </Button>
         </div>
@@ -57,7 +74,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 px-4 pb-4 pt-2 lg:hidden">
+        <div className="border-t border-border/60 bg-background px-4 pb-4 pt-2 lg:hidden">
           <nav className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <Link
