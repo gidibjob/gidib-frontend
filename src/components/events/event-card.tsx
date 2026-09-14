@@ -22,7 +22,7 @@ export function EventCard({ event }: { event: Event }) {
         >
           {event.modality.toUpperCase()}
         </Badge>
-        <h3 className="text-base font-semibold text-foreground transition-colors group-hover:text-gidib-green">
+        <h3 className="text-xl font-semibold text-foreground transition-colors group-hover:text-gidib-green">
           {event.title}
         </h3>
         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">

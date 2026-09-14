@@ -59,7 +59,7 @@ export default async function ArticlePage({ params }: Props) {
         {post.category.toUpperCase()}
       </Badge>
 
-      <h1 className="mt-3 text-3xl font-extrabold leading-tight text-foreground sm:text-4xl">
+      <h1 className="text-h2 mt-3 text-foreground">
         {post.title}
       </h1>
 

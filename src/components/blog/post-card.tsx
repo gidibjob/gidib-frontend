@@ -25,7 +25,7 @@ export function PostCard({ post }: { post: Post }) {
         >
           {post.category.toUpperCase()}
         </Badge>
-        <h3 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-gidib-green">
+        <h3 className="text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-gidib-green">
           {post.title}
         </h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">

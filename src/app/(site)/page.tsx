@@ -66,7 +66,7 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-xl rounded-3xl bg-background/75 p-6 backdrop-blur-md sm:rounded-none sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-            <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="text-hero text-foreground">
               <span className="block">Inovação, conhecimento</span>
               <span className="hero-gradient-text block">
                 e pessoas para o futuro da indústria.
@@ -126,7 +126,7 @@ export default function Home() {
                 >
                   <Icon className="size-5" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-foreground">
+                <h3 className="mt-4 text-xl font-semibold text-foreground">
                   {title}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -143,7 +143,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+              <h2 className="text-h2 text-foreground">
                 Conteúdos que impulsionam a indústria brasileira
               </h2>
             </div>
@@ -167,7 +167,7 @@ export default function Home() {
 
       {/* Próximos eventos */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+        <h2 className="text-h2 text-foreground">
           Próximos eventos
         </h2>
         <div className="mt-8 grid gap-4">
@@ -189,7 +189,7 @@ export default function Home() {
         <div className="overflow-hidden rounded-3xl bg-card">
           <div className="grid gap-10 p-8 sm:p-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
             <div>
-              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+              <h2 className="text-h2 text-foreground">
                 Uma indústria brasileira mais preparada para o futuro.
               </h2>
               <p className="mt-3 max-w-md text-sm text-muted-foreground">

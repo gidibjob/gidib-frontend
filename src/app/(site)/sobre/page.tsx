@@ -61,7 +61,7 @@ export default function SobrePage() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+            <h2 className="text-h2 text-foreground">
               Conhecimento, tecnologia e pessoas para uma indústria
               brasileira mais forte e sustentável.
             </h2>
@@ -104,17 +104,17 @@ export default function SobrePage() {
 
         <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
           <span className="mx-auto block h-0.5 w-10 bg-gidib-green" />
-          <p className="mt-4 text-sm text-white/80">
+          <p className="mt-4 text-base text-white/80">
             Saiba mais sobre nossos ideais e onde queremos chegar.
           </p>
 
           <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
             <Reveal delay={0}>
               <div className="h-full rounded-xl bg-background p-6 shadow-xl">
-                <h3 className="text-center text-base font-bold text-foreground">
+                <h3 className="text-center text-xl font-bold text-foreground">
                   Missão
                 </h3>
-                <p className="mt-3 text-center text-sm text-muted-foreground">
+                <p className="mt-3 text-center text-base text-muted-foreground">
                   Contribuir para com a sociedade brasileira, promovendo
                   debates sobre temas e tendências relevantes e atuais da
                   tecnologia para proporcionar evolução e crescimento dos
@@ -125,10 +125,10 @@ export default function SobrePage() {
 
             <Reveal delay={80}>
               <div className="h-full rounded-xl bg-background p-6 shadow-xl">
-                <h3 className="text-center text-base font-bold text-foreground">
+                <h3 className="text-center text-xl font-bold text-foreground">
                   Visão
                 </h3>
-                <p className="mt-3 text-center text-sm text-muted-foreground">
+                <p className="mt-3 text-center text-base text-muted-foreground">
                   Ser um grupo de excelência no apoio à inovação e tecnologia
                   nas organizações e qualificação dos profissionais
                   brasileiros.
@@ -138,10 +138,10 @@ export default function SobrePage() {
 
             <Reveal delay={160}>
               <div className="h-full rounded-xl bg-background p-6 shadow-xl">
-                <h3 className="text-center text-base font-bold text-foreground">
+                <h3 className="text-center text-xl font-bold text-foreground">
                   Valores
                 </h3>
-                <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+                <ul className="mt-3 space-y-1.5 text-base text-muted-foreground">
                   {values.map((value) => (
                     <li key={value} className="flex gap-2">
                       <span className="text-gidib-green">•</span>
@@ -156,7 +156,7 @@ export default function SobrePage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-gidib-yellow sm:text-3xl">
+        <h2 className="text-h2 text-gidib-yellow">
           Nossa História
         </h2>
         <div className="mx-auto mt-4 flex size-10 items-center justify-center rounded-full bg-gidib-yellow/10 text-gidib-yellow">
@@ -164,7 +164,7 @@ export default function SobrePage() {
         </div>
 
         <div className="mt-8 grid gap-6 text-left sm:grid-cols-2">
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p className="text-base leading-relaxed text-muted-foreground">
             Fundado em 2017, em São Paulo, e idealizado pelo membro Cleiton
             Leite Souza, o{" "}
             <strong className="text-foreground">
@@ -175,7 +175,7 @@ export default function SobrePage() {
             ativamente no desenvolvimento das pessoas, criando uma atmosfera
             de conhecimento compartilhado.
           </p>
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p className="text-base leading-relaxed text-muted-foreground">
             Fruto de uma rede de parcerias entre os membros e suas
             respectivas empresas, instituições de ensino e associações, há
             um forte auxílio no fomento de novos projetos e iniciativas, em
@@ -186,7 +186,7 @@ export default function SobrePage() {
 
       <section className="bg-muted/40 py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="text-h2 text-foreground">
             Nossos pilares
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -198,7 +198,7 @@ export default function SobrePage() {
                   >
                     <Icon className="size-5" />
                   </div>
-                  <h3 className="mt-4 text-sm font-semibold text-foreground">
+                  <h3 className="mt-4 text-xl font-semibold text-foreground">
                     {title}
                   </h3>
                   <p className="mt-1 text-sm text-muted-foreground">

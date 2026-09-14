@@ -184,6 +184,37 @@
   }
 }
 
+/* Escala tipográfica GIDIB — Hero 36/56, H2 30/40, H3 28, Cards 20 */
+.text-hero {
+  font-size: 2.25rem; /* 36px */
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+@media (min-width: 1024px) {
+  .text-hero {
+    font-size: 3.5rem; /* 56px */
+  }
+}
+
+.text-h2 {
+  font-size: 1.875rem; /* 30px */
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+@media (min-width: 1024px) {
+  .text-h2 {
+    font-size: 2.5rem; /* 40px */
+  }
+}
+
+.text-h3 {
+  font-size: 1.75rem; /* 28px */
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 /* Hero — full-bleed image scrim, gradient headline, floating card */
 .hero-scrim {
   background: linear-gradient(

@@ -48,7 +48,7 @@ export default function ProjetosPage() {
                   >
                     {project.category.toUpperCase()}
                   </Badge>
-                  <h3 className="text-base font-semibold text-foreground transition-colors group-hover:text-gidib-green">
+                  <h3 className="text-xl font-semibold text-foreground transition-colors group-hover:text-gidib-green">
                     {project.title}
                   </h3>
                   <p className="text-sm text-muted-foreground">
