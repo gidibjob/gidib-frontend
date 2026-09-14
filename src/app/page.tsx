@@ -38,58 +38,82 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gidib-navy text-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-24">
-          <div>
-            <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
-              Inovação, conhecimento{" "}
-              <span className="text-gidib-yellow">e pessoas</span> para uma
-              indústria brasileira mais forte e sustentável.
+      <section className="relative overflow-hidden bg-background">
+        <div className="hero-glow pointer-events-none absolute inset-0" />
+
+        <div className="relative mx-auto grid max-w-7xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-28">
+          <div className="relative z-10">
+            <span className="hero-badge">
+              <span className="hero-badge-dot" />
+              Grupo de Inovação e Desenvolvimento da Indústria Brasileira
+            </span>
+
+            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <span className="block">Inovação, conhecimento</span>
+              <span className="hero-gradient-text block">
+                e pessoas para o futuro da indústria.
+              </span>
             </h1>
-            <p className="mt-5 max-w-xl text-base text-white/80">
+
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
               Transformando o Brasil por meio da conscientização,
               qualificação e desenvolvimento dos profissionais da indústria
               verde e amarela.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+
+            <div className="mt-10 flex flex-wrap gap-4">
               <Button
                 size="lg"
-                className="bg-gidib-green hover:bg-gidib-green-dark"
+                className="btn-hero-primary bg-gidib-green hover:bg-gidib-green-dark"
               >
                 Conheça a GIDIB
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                className="btn-hero-outline hover:border-gidib-green hover:text-gidib-green"
               >
                 Associe-se agora
               </Button>
             </div>
 
-            <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border/60 pt-8">
               {[
                 { icon: Cpu, label: "Tecnologia" },
                 { icon: Users, label: "Pessoas" },
                 { icon: Factory, label: "Desenvolvimento" },
                 { icon: Lightbulb, label: "Indústria 4.0" },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-sm text-white/80">
-                  <Icon className="size-4 text-gidib-yellow" />
+                <div
+                  key={label}
+                  className="flex items-center gap-2 text-sm text-muted-foreground"
+                >
+                  <Icon className="size-4 text-gidib-green" />
                   {label}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl lg:aspect-square">
-            <Image
-              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&q=80"
-              alt="Profissional da indústria brasileira"
-              fill
-              priority
-              className="object-cover"
-            />
+          <div className="relative z-10">
+            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl shadow-xl shadow-gidib-navy/10 lg:aspect-square">
+              <Image
+                src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&q=80"
+                alt="Profissional da indústria brasileira"
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+
+            <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-border bg-card/95 px-5 py-4 shadow-xl backdrop-blur sm:block">
+              <p className="text-2xl font-extrabold text-gidib-green">
+                {stats[0].value}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {stats[0].label}
+              </p>
+            </div>
           </div>
         </div>
       </section>

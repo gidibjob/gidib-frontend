@@ -141,3 +141,96 @@
     @apply font-sans;
   }
 }
+
+/* Hero — badge, gradient headline, glow background, floating card */
+.hero-glow {
+  background:
+    radial-gradient(560px 380px at 12% 10%, color-mix(in oklch, var(--gidib-green) 14%, transparent) 0%, transparent 70%),
+    radial-gradient(480px 380px at 90% 85%, color-mix(in oklch, var(--gidib-yellow) 16%, transparent) 0%, transparent 65%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gidib-green-dark);
+  background: color-mix(in oklch, var(--gidib-green) 8%, white);
+  border: 1px solid color-mix(in oklch, var(--gidib-green) 28%, transparent);
+}
+
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gidib-green);
+  box-shadow: 0 0 10px var(--gidib-green);
+  animation: hero-blink 2s ease-in-out infinite;
+}
+
+@keyframes hero-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.hero-gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--gidib-green) 0%,
+    var(--gidib-yellow) 55%,
+    var(--gidib-green) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hero-shimmer 7s linear infinite;
+}
+
+@keyframes hero-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.btn-hero-primary {
+  box-shadow: 0 0 0 0 transparent;
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    background-color 0.25s ease;
+}
+.btn-hero-primary:hover {
+  box-shadow: 0 8px 32px -4px color-mix(in oklch, var(--gidib-green) 55%, transparent);
+  transform: translateY(-2px);
+}
+
+.btn-hero-outline {
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.btn-hero-outline:hover {
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--gidib-green) 12%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge-dot,
+  .hero-gradient-text {
+    animation: none;
+  }
+}
