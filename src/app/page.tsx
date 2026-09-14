@@ -109,13 +109,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-
-          <div className="mt-14 hidden max-w-xs rounded-2xl border border-border bg-card/90 px-5 py-4 shadow-xl backdrop-blur sm:block">
-            <p className="text-2xl font-extrabold text-gidib-green">
-              {stats[0].value}
-            </p>
-            <p className="text-xs text-muted-foreground">{stats[0].label}</p>
-          </div>
         </div>
       </section>
 
