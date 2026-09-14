@@ -193,12 +193,29 @@ export const projects = [
 ];
 
 export const partners = [
-  { name: "Instituto Nacional da Indústria" },
-  { name: "Federação Brasileira de Tecnologia" },
-  { name: "Associação de Engenharia Industrial" },
-  { name: "Câmara de Inovação Brasileira" },
-  { name: "Rede de Qualificação Profissional" },
-  { name: "Fórum da Indústria 4.0" },
+  { name: "AXTENN" },
+  { name: "HEXAGON Manufacturing Intelligence" },
+  { name: "Mac 3D" },
+  { name: "SmartPLM" },
+  { name: "Robótica — Revista Técnico-Científica" },
+  { name: "Surface Técnica" },
+  { name: "Simples Soluções" },
+  { name: "Ragna Soluções em Tecnologia" },
+  { name: "NR12 Sem Segredos" },
+  { name: "Peerdustry" },
+  { name: "MCK Automação Industrial" },
+  { name: "Oriai" },
+  { name: "IBVT" },
+  { name: "Exithum" },
+  { name: "Discuta Lean 4.0" },
+  { name: "Dalca Brasil" },
+  { name: "AI Robots" },
+  { name: "3D Inovabr" },
+  { name: "Manufatura Inteligente" },
+  { name: "Ladder Edge" },
+  { name: "IMAM" },
+  { name: "Atalog" },
+  { name: "Comac" },
 ];
 
 export const stats = [
