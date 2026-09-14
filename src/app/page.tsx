@@ -49,11 +49,20 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden bg-background">
-        <div className="hero-glow pointer-events-none absolute inset-0" />
+      <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1920&q=80"
+            alt="Profissional da indústria brasileira"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
+        <div className="hero-scrim absolute inset-0" />
 
-        <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-14 lg:px-8 lg:py-20">
-          <div className="relative z-10">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-xl">
             <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               <span className="block">Inovação, conhecimento</span>
               <span className="hero-gradient-text block">
@@ -77,7 +86,7 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="btn-hero-outline w-full hover:border-gidib-green hover:text-gidib-green sm:w-auto"
+                className="btn-hero-outline w-full border-foreground/20 bg-background/70 backdrop-blur hover:border-gidib-green hover:text-gidib-green sm:w-auto"
               >
                 Associe-se agora
               </Button>
@@ -101,25 +110,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative z-10">
-            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl shadow-xl shadow-gidib-navy/10 lg:aspect-square">
-              <Image
-                src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&q=80"
-                alt="Profissional da indústria brasileira"
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-
-            <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-border bg-card/95 px-5 py-4 shadow-xl backdrop-blur sm:block">
-              <p className="text-2xl font-extrabold text-gidib-green">
-                {stats[0].value}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {stats[0].label}
-              </p>
-            </div>
+          <div className="mt-14 hidden max-w-xs rounded-2xl border border-border bg-card/90 px-5 py-4 shadow-xl backdrop-blur sm:block">
+            <p className="text-2xl font-extrabold text-gidib-green">
+              {stats[0].value}
+            </p>
+            <p className="text-xs text-muted-foreground">{stats[0].label}</p>
           </div>
         </div>
       </section>
