@@ -178,7 +178,7 @@ export default function Home() {
 
       {/* Números */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <div className="overflow-hidden rounded-3xl bg-card">
           <div className="grid gap-10 p-8 sm:p-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
             <div>
               <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
