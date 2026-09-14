@@ -13,7 +13,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
 import { Reveal } from "@/components/reveal";
-import { events, posts, stats } from "@/lib/mock-data";
+import { events, partners, posts, stats } from "@/lib/mock-data";
 
 const statIcons = [Users, FileText, CalendarDays, Network];
 
@@ -222,6 +222,35 @@ export default function Home() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Parceiros em destaque */}
+      <section className="border-t border-border py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-medium uppercase tracking-wide text-muted-foreground">
+            Parceiros que impulsionam a indústria brasileira
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
+            {partners.slice(0, 10).map((partner) => (
+              <span
+                key={partner.name}
+                className="text-sm font-semibold text-muted-foreground/70 transition-colors hover:text-gidib-navy"
+              >
+                {partner.name}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/parceiros"
+              className="text-sm font-medium text-gidib-green hover:underline"
+            >
+              Ver todos os parceiros
+            </Link>
           </div>
         </div>
       </section>
