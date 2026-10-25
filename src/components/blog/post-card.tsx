@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { RemoteImage } from "@/components/remote-image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { categoryBadgeClass } from "@/lib/category-styles";
@@ -11,7 +11,7 @@ export function PostCard({ post }: { post: Post }) {
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-gidib-green/40 hover:shadow-xl hover:shadow-gidib-navy/10"
     >
       <div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
-        <Image
+        <RemoteImage
           src={post.image}
           alt={post.title}
           fill

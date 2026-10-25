@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { RemoteImage } from "@/components/remote-image";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/layout/page-hero";
 import { Reveal } from "@/components/reveal";
@@ -35,7 +35,7 @@ export default async function ProjetosPage() {
             <Reveal key={project.slug} delay={i * 80}>
               <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-gidib-green/40 hover:shadow-xl hover:shadow-gidib-navy/10">
                 <div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
-                  <Image
+                  <RemoteImage
                     src={project.image}
                     alt={project.title}
                     fill

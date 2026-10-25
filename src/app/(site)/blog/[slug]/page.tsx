@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { RemoteImage } from "@/components/remote-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Link2, MessageCircle, Share2 } from "lucide-react";
@@ -71,7 +71,7 @@ export default async function ArticlePage({ params }: Props) {
       </p>
 
       <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl bg-muted">
-        <Image
+        <RemoteImage
           src={post.image}
           alt={post.title}
           fill
