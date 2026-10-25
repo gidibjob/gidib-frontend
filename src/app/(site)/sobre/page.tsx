@@ -102,13 +102,13 @@ export default function SobrePage() {
           <div className="absolute inset-0 bg-gidib-navy/85" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <span className="mx-auto block h-0.5 w-10 bg-gidib-green" />
           <p className="mt-4 text-base text-white/80">
             Saiba mais sobre nossos ideais e onde queremos chegar.
           </p>
 
-          <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-6 text-left">
+          <div className="mt-10 flex flex-col gap-6 text-left">
             <Reveal delay={0}>
               <div className="h-full rounded-xl bg-background p-8 shadow-xl">
                 <h3 className="text-center text-xl font-bold text-foreground">
@@ -141,7 +141,7 @@ export default function SobrePage() {
                 <h3 className="text-center text-xl font-bold text-foreground">
                   Valores
                 </h3>
-                <ul className="mt-4 gap-x-10 space-y-2 text-base text-muted-foreground sm:columns-2">
+                <ul className="mt-4 gap-x-10 space-y-2 text-base text-muted-foreground sm:columns-2 lg:columns-3">
                   {values.map((value) => (
                     <li key={value} className="flex gap-2 break-inside-avoid">
                       <span className="text-gidib-green">•</span>
