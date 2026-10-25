@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getCategories, getPosts } from "@/lib/content";
 import { BlogPageClient } from "./blog-page-client";
 
@@ -26,7 +27,9 @@ export default async function BlogPage() {
 
       <div className="rounded-t-3xl bg-background px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <BlogPageClient posts={posts} categories={categories} />
+          <Suspense>
+            <BlogPageClient posts={posts} categories={categories} />
+          </Suspense>
         </div>
       </div>
     </div>

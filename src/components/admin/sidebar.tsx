@@ -14,6 +14,7 @@ import {
   Newspaper,
   ShieldCheck,
   Tags,
+  UserPlus,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { href: "/admin/events", label: "Eventos", icon: CalendarDays },
   { href: "/admin/projects", label: "Projetos", icon: FolderKanban },
   { href: "/admin/partners", label: "Parceiros", icon: Handshake },
+  { href: "/admin/associados", label: "Associações", icon: UserPlus },
   { href: "/admin/messages", label: "Mensagens", icon: Mail },
   { href: "/admin/categorias", label: "Categorias e tags", icon: Tags },
   { href: "/admin/usuarios", label: "Usuários", icon: ShieldCheck, adminOnly: true },

@@ -14,6 +14,7 @@ import {
   Newspaper,
   ShieldCheck,
   Tags,
+  UserPlus,
   X,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { href: "/admin/events", label: "Eventos", icon: CalendarDays },
   { href: "/admin/projects", label: "Projetos", icon: FolderKanban },
   { href: "/admin/partners", label: "Parceiros", icon: Handshake },
+  { href: "/admin/associados", label: "Associações", icon: UserPlus },
   { href: "/admin/messages", label: "Mensagens", icon: Mail },
   { href: "/admin/categorias", label: "Categorias e tags", icon: Tags },
   { href: "/admin/usuarios", label: "Usuários", icon: ShieldCheck, adminOnly: true },
@@ -36,6 +38,7 @@ function titleForPath(pathname: string) {
   if (pathname.startsWith("/admin/events")) return "Eventos";
   if (pathname.startsWith("/admin/projects")) return "Projetos";
   if (pathname.startsWith("/admin/partners")) return "Parceiros";
+  if (pathname.startsWith("/admin/associados")) return "Associações";
   if (pathname.startsWith("/admin/messages")) return "Mensagens";
   if (pathname.startsWith("/admin/usuarios")) return "Usuários";
   if (pathname.startsWith("/admin/categorias")) return "Categorias e tags";

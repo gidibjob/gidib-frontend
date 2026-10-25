@@ -44,6 +44,35 @@ export type AdminPartner = {
   published: boolean;
 };
 
+export type MembershipStatus = "new" | "in_review" | "approved" | "rejected";
+
+export const membershipStatusLabels: Record<MembershipStatus, string> = {
+  new: "Nova",
+  in_review: "Em análise",
+  approved: "Aprovada",
+  rejected: "Recusada",
+};
+
+export const memberTypeLabels: Record<string, string> = {
+  profissional: "Profissional",
+  estudante: "Estudante",
+  empresa: "Empresa / instituição",
+};
+
+export type MembershipRequest = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  memberType: string;
+  organization: string | null;
+  jobTitle: string | null;
+  city: string | null;
+  message: string | null;
+  status: MembershipStatus;
+  createdAt: string;
+};
+
 export type ContactMessage = {
   id: string;
   name: string;

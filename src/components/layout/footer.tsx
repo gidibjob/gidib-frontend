@@ -8,6 +8,7 @@ const columns = [
       { href: "/sobre", label: "Sobre a GIDIB" },
       { href: "/projetos", label: "Projetos" },
       { href: "/parceiros", label: "Parceiros" },
+      { href: "/associe-se", label: "Associe-se" },
       { href: "/contato", label: "Contato" },
     ],
   },

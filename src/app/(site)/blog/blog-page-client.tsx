@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Newspaper, Search, SearchX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,8 +37,18 @@ export function BlogPageClient({
 }) {
   const FILTERS = ["Todos", ...categories];
   const [activeFilter, setActiveFilter] = useState("Todos");
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [page, setPage] = useState(1);
+
+  // A busca do menu navega para /blog?q=...; com a página já aberta o
+  // componente não remonta, então sincroniza o termo aqui.
+  const urlQuery = searchParams.get("q") ?? "";
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearch(urlQuery);
+    setPage(1);
+  }, [urlQuery]);
   const listRef = useRef<HTMLDivElement>(null);
 
   const filteredPosts = useMemo(() => {

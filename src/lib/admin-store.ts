@@ -12,6 +12,8 @@ import {
   rowToAdminPost,
   rowToAdminProject,
   rowToContactMessage,
+  rowToMembershipRequest,
+  type MembershipRequestRow,
   type ContactMessageRow,
   type EventRow,
   type PartnerRow,
@@ -24,6 +26,8 @@ import type {
   AdminPost,
   AdminProject,
   ContactMessage,
+  MembershipRequest,
+  MembershipStatus,
 } from "@/types/admin";
 
 // Mensagem amigável para os erros mais comuns do Postgres/PostgREST.
@@ -276,6 +280,64 @@ export function useAdminMessages() {
   );
 
   return { items, hydrated, error, setRead, remove };
+}
+
+export function useAdminMemberships() {
+  const supabase = useMemo(() => createClient(), []);
+  const [items, setItems] = useState<MembershipRequest[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("membership_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      setError(describeError(error));
+    } else {
+      setError(null);
+      setItems((data as MembershipRequestRow[]).map(rowToMembershipRequest));
+    }
+    setHydrated(true);
+  }, [supabase]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void reload();
+  }, [reload]);
+
+  const setStatus = useCallback(
+    async (id: string, status: MembershipStatus) => {
+      const { error } = await supabase
+        .from("membership_requests")
+        .update({ status })
+        .eq("id", id);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, reload]
+  );
+
+  const remove = useCallback(
+    async (id: string) => {
+      const { error } = await supabase
+        .from("membership_requests")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, reload]
+  );
+
+  return { items, hydrated, error, setStatus, remove };
 }
 
 export function slugify(value: string) {

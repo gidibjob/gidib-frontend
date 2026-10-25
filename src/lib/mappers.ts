@@ -1,4 +1,6 @@
 import type {
+  MembershipRequest,
+  MembershipStatus,
   AdminEvent,
   AdminPartner,
   AdminPost,
@@ -68,6 +70,38 @@ export type ContactMessageRow = {
   read: boolean;
   created_at: string;
 };
+
+export type MembershipRequestRow = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  member_type: string;
+  organization: string | null;
+  job_title: string | null;
+  city: string | null;
+  message: string | null;
+  status: MembershipStatus;
+  created_at: string;
+};
+
+export function rowToMembershipRequest(
+  row: MembershipRequestRow
+): MembershipRequest {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    memberType: row.member_type,
+    organization: row.organization,
+    jobTitle: row.job_title,
+    city: row.city,
+    message: row.message,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
 
 const SHORT_MONTHS = [
   "jan", "fev", "mar", "abr", "mai", "jun",
