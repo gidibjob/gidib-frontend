@@ -12,6 +12,7 @@ import {
   LogOut,
   Mail,
   Newspaper,
+  ShieldCheck,
   Tags,
 } from "lucide-react";
 
@@ -23,9 +24,10 @@ const NAV_ITEMS = [
   { href: "/admin/partners", label: "Parceiros", icon: Handshake },
   { href: "/admin/messages", label: "Mensagens", icon: Mail },
   { href: "/admin/categorias", label: "Categorias e tags", icon: Tags },
+  { href: "/admin/usuarios", label: "Usuários", icon: ShieldCheck, adminOnly: true },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -54,7 +56,7 @@ export function AdminSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {NAV_ITEMS.filter((item) => isSuperAdmin || !item.adminOnly).map(({ href, label, icon: Icon }) => {
           const active =
             href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
           return (

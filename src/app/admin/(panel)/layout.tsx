@@ -2,19 +2,19 @@ import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 import { createClient } from "@/lib/supabase/server";
 
-async function checkAdmin() {
+async function getRole() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return false;
+  if (!user) return null;
 
   const { data } = await supabase
     .from("admin_users")
-    .select("user_id")
+    .select("role")
     .eq("user_id", user.id)
     .maybeSingle();
-  return Boolean(data);
+  return (data?.role as "admin" | "editor" | undefined) ?? null;
 }
 
 export default async function AdminPanelLayout({
@@ -22,13 +22,14 @@ export default async function AdminPanelLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isAdmin = await checkAdmin();
+  const role = await getRole();
+  const isAdmin = role !== null;
 
   return (
     <div className="flex min-h-svh">
-      <AdminSidebar />
+      <AdminSidebar isSuperAdmin={role === "admin"} />
       <div className="flex min-h-svh flex-1 flex-col">
-        <AdminTopbar />
+        <AdminTopbar isSuperAdmin={role === "admin"} />
         {!isAdmin && (
           <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-center text-xs text-destructive sm:px-6">
             Sua conta não tem permissão de administrador. Peça para um

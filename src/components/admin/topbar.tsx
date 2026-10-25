@@ -12,6 +12,7 @@ import {
   Mail,
   Menu,
   Newspaper,
+  ShieldCheck,
   Tags,
   X,
 } from "lucide-react";
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/admin/partners", label: "Parceiros", icon: Handshake },
   { href: "/admin/messages", label: "Mensagens", icon: Mail },
   { href: "/admin/categorias", label: "Categorias e tags", icon: Tags },
+  { href: "/admin/usuarios", label: "Usuários", icon: ShieldCheck, adminOnly: true },
 ];
 
 function titleForPath(pathname: string) {
@@ -35,11 +37,12 @@ function titleForPath(pathname: string) {
   if (pathname.startsWith("/admin/projects")) return "Projetos";
   if (pathname.startsWith("/admin/partners")) return "Parceiros";
   if (pathname.startsWith("/admin/messages")) return "Mensagens";
+  if (pathname.startsWith("/admin/usuarios")) return "Usuários";
   if (pathname.startsWith("/admin/categorias")) return "Categorias e tags";
   return "Admin";
 }
 
-export function AdminTopbar() {
+export function AdminTopbar({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   const pathname = usePathname();
   const title = titleForPath(pathname);
   const [open, setOpen] = useState(false);
@@ -80,7 +83,7 @@ export function AdminTopbar() {
 
       {open && (
         <nav className="flex flex-col gap-1 border-t border-border px-3 py-3 lg:hidden">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
+          {NAV_ITEMS.filter((item) => isSuperAdmin || !item.adminOnly).map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
