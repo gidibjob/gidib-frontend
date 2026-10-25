@@ -108,9 +108,9 @@ export default function SobrePage() {
             Saiba mais sobre nossos ideais e onde queremos chegar.
           </p>
 
-          <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
+          <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-6 text-left">
             <Reveal delay={0}>
-              <div className="h-full rounded-xl bg-background p-6 shadow-xl">
+              <div className="h-full rounded-xl bg-background p-8 shadow-xl">
                 <h3 className="text-center text-xl font-bold text-foreground">
                   Missão
                 </h3>
@@ -124,7 +124,7 @@ export default function SobrePage() {
             </Reveal>
 
             <Reveal delay={80}>
-              <div className="h-full rounded-xl bg-background p-6 shadow-xl">
+              <div className="h-full rounded-xl bg-background p-8 shadow-xl">
                 <h3 className="text-center text-xl font-bold text-foreground">
                   Visão
                 </h3>
@@ -137,13 +137,13 @@ export default function SobrePage() {
             </Reveal>
 
             <Reveal delay={160}>
-              <div className="h-full rounded-xl bg-background p-6 shadow-xl">
+              <div className="h-full rounded-xl bg-background p-8 shadow-xl">
                 <h3 className="text-center text-xl font-bold text-foreground">
                   Valores
                 </h3>
-                <ul className="mt-3 space-y-1.5 text-base text-muted-foreground">
+                <ul className="mt-4 gap-x-10 space-y-2 text-base text-muted-foreground sm:columns-2">
                   {values.map((value) => (
-                    <li key={value} className="flex gap-2">
+                    <li key={value} className="flex gap-2 break-inside-avoid">
                       <span className="text-gidib-green">•</span>
                       {value}
                     </li>
