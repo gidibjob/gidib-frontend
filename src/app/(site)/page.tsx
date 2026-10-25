@@ -20,7 +20,6 @@ import {
   getUpcomingEvents,
 } from "@/lib/content";
 import { ProjectCard } from "@/components/projects/project-card";
-import { NoUpcomingEvents } from "@/components/events/no-events";
 import { stats } from "@/lib/mock-data";
 
 export const revalidate = 60;
@@ -173,7 +172,8 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Conteúdos em destaque */}
+      {/* Conteúdos em destaque — some da home quando não há artigos */}
+      {featuredPosts.length > 0 && (
       <section className="bg-muted/40 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
@@ -199,33 +199,26 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Próximos eventos */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="text-h2 text-foreground">
-          Próximos eventos
-        </h2>
-        {upcomingEvents.length > 0 ? (
-          <>
-            <div className="mt-8 grid gap-4">
-              {upcomingEvents.map((event, i) => (
-                <Reveal key={event.slug} delay={i * 80}>
-                  <EventCard event={event} />
-                </Reveal>
-              ))}
-            </div>
-            <div className="mt-10 flex justify-center">
-              <Link href="/eventos" className={buttonVariants({ variant: "outline" })}>
-                Ver todos os eventos
-              </Link>
-            </div>
-          </>
-        ) : (
-          <div className="mt-8">
-            <NoUpcomingEvents />
+      {/* Próximos eventos — some da home quando não há nenhum agendado */}
+      {upcomingEvents.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <h2 className="text-h2 text-foreground">Próximos eventos</h2>
+          <div className="mt-8 grid gap-4">
+            {upcomingEvents.map((event, i) => (
+              <Reveal key={event.slug} delay={i * 80}>
+                <EventCard event={event} />
+              </Reveal>
+            ))}
           </div>
-        )}
-      </section>
+          <div className="mt-10 flex justify-center">
+            <Link href="/eventos" className={buttonVariants({ variant: "outline" })}>
+              Ver todos os eventos
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Números */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

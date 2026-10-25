@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Search, SearchX } from "lucide-react";
+import { ChevronLeft, ChevronRight, Newspaper, Search, SearchX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
@@ -9,6 +9,23 @@ import { Reveal } from "@/components/reveal";
 import type { Post } from "@/types/content";
 
 const PAGE_SIZE = 12;
+
+function NoPosts() {
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border px-6 py-12 text-center">
+      <div className="flex size-12 items-center justify-center rounded-full bg-gidib-green/10 text-gidib-green">
+        <Newspaper className="size-5" />
+      </div>
+      <p className="text-base font-semibold text-foreground">
+        Em breve novos conteúdos
+      </p>
+      <p className="max-w-sm text-sm text-muted-foreground">
+        Ainda não há artigos publicados. Volte em breve para acompanhar as
+        novidades da GIDIB.
+      </p>
+    </div>
+  );
+}
 
 export function BlogPageClient({
   posts,
@@ -50,6 +67,8 @@ export function BlogPageClient({
     setPage(next);
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  if (posts.length === 0) return <NoPosts />;
 
   return (
     <>
