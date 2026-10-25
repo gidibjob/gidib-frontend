@@ -13,7 +13,10 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
 import { Reveal } from "@/components/reveal";
-import { events, partners, posts, stats } from "@/lib/mock-data";
+import { getEvents, getPartners, getPosts } from "@/lib/content";
+import { stats } from "@/lib/mock-data";
+
+export const revalidate = 60;
 
 const statIcons = [Users, FileText, CalendarDays, Network];
 
@@ -45,9 +48,15 @@ const pillars = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [posts, events, partners] = await Promise.all([
+    getPosts(),
+    getEvents(),
+    getPartners(),
+  ]);
   const featuredPosts = posts.slice(0, 3);
-  const upcomingEvents = events.slice(0, 3);
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingEvents = events.filter((e) => e.date >= today).slice(0, 3);
 
   return (
     <>

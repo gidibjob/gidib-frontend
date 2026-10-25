@@ -1,148 +1,294 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { categories, events, posts } from "@/lib/mock-data";
-import type { AdminEvent, AdminPost } from "@/types/admin";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import {
+  adminEventToRow,
+  adminPartnerToRow,
+  adminPostToRow,
+  adminProjectToRow,
+  rowToAdminEvent,
+  rowToAdminPartner,
+  rowToAdminPost,
+  rowToAdminProject,
+  rowToContactMessage,
+  type ContactMessageRow,
+  type EventRow,
+  type PartnerRow,
+  type PostRow,
+  type ProjectRow,
+} from "@/lib/mappers";
+import type {
+  AdminEvent,
+  AdminPartner,
+  AdminPost,
+  AdminProject,
+  ContactMessage,
+} from "@/types/admin";
 
-const POSTS_KEY = "gidib-admin-posts";
-const EVENTS_KEY = "gidib-admin-events";
-const CATEGORIES_KEY = "gidib-admin-categories";
-const TAGS_KEY = "gidib-admin-tags";
-
-const seedCategories: string[] = [...categories];
-const seedTags: string[] = Array.from(
-  new Set(posts.flatMap((post) => post.tags))
-).sort();
-
-const seedPosts: AdminPost[] = posts.map((post) => ({
-  ...post,
-  status: "published",
-}));
-
-const seedEvents: AdminEvent[] = events.map((event) => ({
-  ...event,
-  status: "published",
-}));
-
-function readStorage<T>(key: string, seed: T[]): T[] {
-  if (typeof window === "undefined") return seed;
-  try {
-    const raw = window.localStorage.getItem(key);
-    if (!raw) return seed;
-    return JSON.parse(raw) as T[];
-  } catch {
-    return seed;
-  }
+// Mensagem amigável para os erros mais comuns do Postgres/PostgREST.
+export function describeError(error: { code?: string; message: string }) {
+  if (error.code === "23505") return "Já existe um registro com esse slug/nome.";
+  if (error.code === "23503")
+    return "Este item está em uso por outros registros e não pode ser removido.";
+  if (error.code === "42501")
+    return "Sem permissão. Verifique se sua conta é de administrador.";
+  return error.message;
 }
 
-function writeStorage<T>(key: string, value: T[]) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // localStorage indisponível (modo privado, quota excedida, etc.) — ignora.
-  }
-}
+type Identifiable = { slug: string } | { id?: string };
 
-function useAdminCollection<T extends { slug: string }>(
-  key: string,
-  seed: T[]
-) {
-  const [items, setItems] = useState<T[]>(seed);
+type CollectionConfig<T> = {
+  table: string;
+  fromRow: (row: never) => T;
+  toRow: (item: T) => object;
+  orderBy: { column: string; ascending: boolean };
+  // Coluna usada para localizar o registro em update/remove.
+  key: "slug" | "id";
+};
+
+function useCollection<T extends Identifiable>(config: CollectionConfig<T>) {
+  const { table, fromRow, toRow, orderBy, key } = config;
+  const supabase = useMemo(() => createClient(), []);
+  const [items, setItems] = useState<T[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .order(orderBy.column, { ascending: orderBy.ascending });
+    if (error) {
+      setError(describeError(error));
+    } else {
+      setError(null);
+      setItems((data as never[]).map(fromRow));
+    }
+    setHydrated(true);
+  }, [supabase, table, fromRow, orderBy.column, orderBy.ascending]);
 
   useEffect(() => {
-    // Hidrata a partir do localStorage — só existe no client, por isso não dá
-    // pra ler no useState inicial (evita mismatch de hydration do SSR).
+    // Carga inicial a partir do Supabase.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setItems(readStorage(key, seed));
-    setHydrated(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
-
-  const persist = useCallback(
-    (next: T[]) => {
-      setItems(next);
-      writeStorage(key, next);
-    },
-    [key]
-  );
+    void reload();
+  }, [reload]);
 
   const create = useCallback(
-    (item: T) => persist([item, ...items]),
-    [items, persist]
+    async (item: T) => {
+      const { error } = await supabase.from(table).insert(toRow(item));
+      if (error) throw new Error(describeError(error));
+      await reload();
+    },
+    [supabase, table, toRow, reload]
   );
 
   const update = useCallback(
-    (slug: string, patch: Partial<T>) =>
-      persist(
-        items.map((item) =>
-          item.slug === slug ? { ...item, ...patch } : item
-        )
-      ),
-    [items, persist]
+    async (id: string, item: T) => {
+      const { error } = await supabase
+        .from(table)
+        .update(toRow(item))
+        .eq(key, id);
+      if (error) throw new Error(describeError(error));
+      await reload();
+    },
+    [supabase, table, toRow, key, reload]
   );
 
   const remove = useCallback(
-    (slug: string) => persist(items.filter((item) => item.slug !== slug)),
-    [items, persist]
+    async (id: string) => {
+      const { error } = await supabase.from(table).delete().eq(key, id);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, table, key, reload]
   );
 
-  const getBySlug = useCallback(
-    (slug: string) => items.find((item) => item.slug === slug),
-    [items]
-  );
-
-  return { items, hydrated, create, update, remove, getBySlug };
+  return { items, hydrated, error, create, update, remove, reload };
 }
 
+const POSTS_CONFIG: CollectionConfig<AdminPost> = {
+  table: "posts",
+  fromRow: (row) => rowToAdminPost(row as PostRow),
+  toRow: adminPostToRow,
+  orderBy: { column: "created_at", ascending: false },
+  key: "slug",
+};
+
+const EVENTS_CONFIG: CollectionConfig<AdminEvent> = {
+  table: "events",
+  fromRow: (row) => rowToAdminEvent(row as EventRow),
+  toRow: adminEventToRow,
+  orderBy: { column: "event_date", ascending: true },
+  key: "slug",
+};
+
+const PROJECTS_CONFIG: CollectionConfig<AdminProject> = {
+  table: "projects",
+  fromRow: (row) => rowToAdminProject(row as ProjectRow),
+  toRow: adminProjectToRow,
+  orderBy: { column: "sort_order", ascending: true },
+  key: "id",
+};
+
+const PARTNERS_CONFIG: CollectionConfig<AdminPartner> = {
+  table: "partners",
+  fromRow: (row) => rowToAdminPartner(row as PartnerRow),
+  toRow: adminPartnerToRow,
+  orderBy: { column: "sort_order", ascending: true },
+  key: "id",
+};
+
 export function useAdminPosts() {
-  return useAdminCollection<AdminPost>(POSTS_KEY, seedPosts);
+  return useCollection<AdminPost>(POSTS_CONFIG);
 }
 
 export function useAdminEvents() {
-  return useAdminCollection<AdminEvent>(EVENTS_KEY, seedEvents);
+  return useCollection<AdminEvent>(EVENTS_CONFIG);
 }
 
-function useStringList(key: string, seed: string[]) {
-  const [items, setItems] = useState<string[]>(seed);
+export function useAdminProjects() {
+  return useCollection<AdminProject>(PROJECTS_CONFIG);
+}
+
+export function useAdminPartners() {
+  return useCollection<AdminPartner>(PARTNERS_CONFIG);
+}
+
+function useNameList(table: "categories" | "tags") {
+  const supabase = useMemo(() => createClient(), []);
+  const [items, setItems] = useState<string[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    const { data, error } = await supabase
+      .from(table)
+      .select("name")
+      .order("name");
+    if (error) {
+      setError(describeError(error));
+    } else {
+      setError(null);
+      setItems((data as { name: string }[]).map((row) => row.name));
+    }
+    setHydrated(true);
+  }, [supabase, table]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setItems(readStorage(key, seed));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
-
-  const persist = useCallback(
-    (next: string[]) => {
-      setItems(next);
-      writeStorage(key, next);
-    },
-    [key]
-  );
+    void reload();
+  }, [reload]);
 
   const add = useCallback(
-    (value: string) => {
+    async (value: string) => {
       const trimmed = value.trim();
       if (!trimmed || items.includes(trimmed)) return;
-      persist([...items, trimmed]);
+      const { error } = await supabase.from(table).insert({ name: trimmed });
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
     },
-    [items, persist]
+    [supabase, table, items, reload]
   );
 
   const remove = useCallback(
-    (value: string) => persist(items.filter((item) => item !== value)),
-    [items, persist]
+    async (value: string) => {
+      const { error } = await supabase.from(table).delete().eq("name", value);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, table, reload]
   );
 
-  return { items, add, remove };
+  return { items, hydrated, error, add, remove };
 }
 
 export function useAdminCategories() {
-  return useStringList(CATEGORIES_KEY, seedCategories);
+  return useNameList("categories");
 }
 
 export function useAdminTags() {
-  return useStringList(TAGS_KEY, seedTags);
+  return useNameList("tags");
+}
+
+export function useAdminMessages() {
+  const supabase = useMemo(() => createClient(), []);
+  const [items, setItems] = useState<ContactMessage[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      setError(describeError(error));
+    } else {
+      setError(null);
+      setItems((data as ContactMessageRow[]).map(rowToContactMessage));
+    }
+    setHydrated(true);
+  }, [supabase]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void reload();
+  }, [reload]);
+
+  const setRead = useCallback(
+    async (id: string, read: boolean) => {
+      const { error } = await supabase
+        .from("contact_messages")
+        .update({ read })
+        .eq("id", id);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, reload]
+  );
+
+  const remove = useCallback(
+    async (id: string) => {
+      const { error } = await supabase
+        .from("contact_messages")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        setError(describeError(error));
+        return;
+      }
+      await reload();
+    },
+    [supabase, reload]
+  );
+
+  return { items, hydrated, error, setRead, remove };
+}
+
+// Envia uma imagem para o bucket público `media` e devolve a URL pública.
+export async function uploadMedia(file: File) {
+  const supabase = createClient();
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "bin";
+  const path = `${new Date().getFullYear()}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("media").upload(path, file, {
+    contentType: file.type,
+    cacheControl: "31536000",
+  });
+  if (error) throw new Error(describeError(error));
+  return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
 }
 
 export function slugify(value: string) {

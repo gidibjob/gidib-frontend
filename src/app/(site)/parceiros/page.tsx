@@ -4,7 +4,7 @@ import { Handshake } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHero } from "@/components/layout/page-hero";
 import { Reveal } from "@/components/reveal";
-import { partners } from "@/lib/mock-data";
+import { getPartners } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Parceiros",
@@ -12,7 +12,11 @@ export const metadata: Metadata = {
     "Organizações que caminham junto com a GIDIB pelo desenvolvimento da indústria brasileira.",
 };
 
-export default function ParceirosPage() {
+export const revalidate = 60;
+
+export default async function ParceirosPage() {
+  const partners = await getPartners();
+
   return (
     <>
       <PageHero

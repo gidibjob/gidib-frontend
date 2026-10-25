@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 import { CalendarX2 } from "lucide-react";
 import { EventCard } from "@/components/events/event-card";
 import { Reveal } from "@/components/reveal";
-import { events } from "@/lib/mock-data";
-import type { EventModality } from "@/types/content";
+import type { Event, EventModality } from "@/types/content";
 
 const FILTERS = [
   "Todos",
@@ -16,7 +15,7 @@ const FILTERS = [
   "Encontro",
 ] as const;
 
-export function EventosPageClient() {
+export function EventosPageClient({ events }: { events: Event[] }) {
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>(
     "Todos"
   );
@@ -26,7 +25,7 @@ export function EventosPageClient() {
     return events.filter(
       (event) => event.modality === (activeFilter as EventModality)
     );
-  }, [activeFilter]);
+  }, [events, activeFilter]);
 
   return (
     <>

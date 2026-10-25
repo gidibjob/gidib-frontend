@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/layout/page-hero";
 import { Reveal } from "@/components/reveal";
-import { projects } from "@/lib/mock-data";
+import { getProjects } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Projetos",
@@ -11,13 +11,17 @@ export const metadata: Metadata = {
     "Conheça os projetos e iniciativas da GIDIB para o desenvolvimento da indústria brasileira.",
 };
 
+export const revalidate = 60;
+
 const projectCategoryClass: Record<string, string> = {
   Qualificação: "bg-gidib-green text-white",
   Inovação: "bg-gidib-blue text-white",
   Sustentabilidade: "bg-gidib-green-dark text-white",
 };
 
-export default function ProjetosPage() {
+export default async function ProjetosPage() {
+  const projects = await getProjects();
+
   return (
     <>
       <PageHero

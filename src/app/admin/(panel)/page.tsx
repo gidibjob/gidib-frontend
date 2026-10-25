@@ -1,22 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarDays, Eye, Newspaper, Users } from "lucide-react";
-import { useAdminEvents, useAdminPosts } from "@/lib/admin-store";
+import { CalendarDays, Mail, Newspaper, Users } from "lucide-react";
+import {
+  useAdminEvents,
+  useAdminMessages,
+  useAdminPartners,
+  useAdminPosts,
+} from "@/lib/admin-store";
 
 export default function AdminDashboardPage() {
   const { items: posts } = useAdminPosts();
   const { items: events } = useAdminEvents();
+  const { items: messages } = useAdminMessages();
+  const { items: partners } = useAdminPartners();
+  const unread = messages.filter((m) => !m.read).length;
 
   const publishedPosts = posts.filter((p) => p.status === "published").length;
   const publishedEvents = events.filter((e) => e.status === "published").length;
 
   const cards = [
     {
-      icon: Eye,
-      label: "Visitantes (30 dias)",
-      value: "—",
-      hint: "Conecte o Supabase/Analytics para números reais",
+      icon: Mail,
+      label: "Mensagens novas",
+      value: unread,
+      hint: `${messages.length} no total`,
     },
     {
       icon: Newspaper,
@@ -32,9 +40,9 @@ export default function AdminDashboardPage() {
     },
     {
       icon: Users,
-      label: "Usuários do painel",
-      value: 1,
-      hint: "Administrador",
+      label: "Parceiros",
+      value: partners.filter((p) => p.published).length,
+      hint: `${partners.length} cadastrados`,
     },
   ];
 

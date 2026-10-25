@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getEvents } from "@/lib/content";
 import { EventosPageClient } from "./eventos-page-client";
 
 export const metadata: Metadata = {
@@ -7,7 +8,11 @@ export const metadata: Metadata = {
     "Participe, aprenda e conecte-se com profissionais da indústria.",
 };
 
-export default function EventosPage() {
+export const revalidate = 60;
+
+export default async function EventosPage() {
+  const events = await getEvents();
+
   return (
     <div className="bg-gidib-navy text-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -19,7 +24,7 @@ export default function EventosPage() {
 
       <div className="rounded-t-3xl bg-background px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <EventosPageClient />
+          <EventosPageClient events={events} />
         </div>
       </div>
     </div>

@@ -6,15 +6,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { Reveal } from "@/components/reveal";
-import { categories, posts } from "@/lib/mock-data";
+import type { Post } from "@/types/content";
 
 const PAGE_SIZE = 6;
-const FILTERS = ["Todos", ...categories] as const;
 
-export function BlogPageClient() {
-  const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>(
-    "Todos"
-  );
+export function BlogPageClient({
+  posts,
+  categories,
+}: {
+  posts: Post[];
+  categories: string[];
+}) {
+  const FILTERS = ["Todos", ...categories];
+  const [activeFilter, setActiveFilter] = useState("Todos");
   const [search, setSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -32,7 +36,7 @@ export function BlogPageClient() {
         post.tags.some((tag) => tag.toLowerCase().includes(query))
       );
     });
-  }, [activeFilter, search]);
+  }, [posts, activeFilter, search]);
 
   const visiblePosts = filteredPosts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPosts.length;

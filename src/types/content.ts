@@ -1,10 +1,4 @@
-export type PostCategory =
-  | "Tecnologia"
-  | "Indústria"
-  | "Carreira"
-  | "Inovação"
-  | "Sustentabilidade"
-  | "GIDIB";
+export type PostCategory = string;
 
 export type Post = {
   slug: string;
@@ -33,4 +27,17 @@ export type Event = {
   time: string;
   location: string;
   registrationUrl: string;
+};
+
+export type Project = {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+};
+
+export type Partner = {
+  name: string;
+  websiteUrl?: string;
 };

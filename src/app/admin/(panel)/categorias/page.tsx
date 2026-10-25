@@ -13,6 +13,7 @@ function ManagedList({
   onAdd,
   onRemove,
   placeholder,
+  error,
 }: {
   title: string;
   description: string;
@@ -20,6 +21,7 @@ function ManagedList({
   onAdd: (value: string) => void;
   onRemove: (value: string) => void;
   placeholder: string;
+  error: string | null;
 }) {
   const [value, setValue] = useState("");
 
@@ -50,6 +52,12 @@ function ManagedList({
           <Plus className="size-4" />
         </Button>
       </form>
+
+      {error && (
+        <p role="alert" className="mt-3 text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
       <div className="mt-4 flex flex-wrap gap-2">
         {items.map((item) => (
@@ -89,6 +97,7 @@ export default function AdminCategoriasPage() {
         items={categories.items}
         onAdd={categories.add}
         onRemove={categories.remove}
+        error={categories.error}
         placeholder="Nova categoria"
       />
       <ManagedList
@@ -97,6 +106,7 @@ export default function AdminCategoriasPage() {
         items={tags.items}
         onAdd={tags.add}
         onRemove={tags.remove}
+        error={tags.error}
         placeholder="Nova tag"
       />
     </div>

@@ -4,9 +4,12 @@ import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/lib/supabase/client";
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (submitted) {
     return (
@@ -34,8 +37,26 @@ export function ContactForm() {
   return (
     <form
       className="flex flex-col gap-4"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        const form = e.currentTarget;
+        const data = new FormData(form);
+        setSending(true);
+        setError(null);
+        const { error } = await createClient()
+          .from("contact_messages")
+          .insert({
+            name: String(data.get("name")),
+            email: String(data.get("email")),
+            subject: String(data.get("subject") ?? "") || null,
+            message: String(data.get("message")),
+          });
+        setSending(false);
+        if (error) {
+          setError("Não foi possível enviar sua mensagem. Tente novamente.");
+          return;
+        }
+        form.reset();
         setSubmitted(true);
       }}
     >
@@ -93,11 +114,18 @@ export function ContactForm() {
         />
       </div>
 
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+
       <Button
         type="submit"
+        disabled={sending}
         className="btn-hero-primary mt-2 w-fit bg-gidib-green hover:bg-gidib-green-dark"
       >
-        Enviar mensagem
+        {sending ? "Enviando..." : "Enviar mensagem"}
       </Button>
     </form>
   );

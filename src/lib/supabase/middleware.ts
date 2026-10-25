@@ -35,7 +35,25 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+  const isAdminArea = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isLogin = pathname === "/admin/login";
+
+  if (isAdminArea && !isLogin && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/login";
+    return NextResponse.redirect(url);
+  }
+
+  if (isLogin && user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin";
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 }

@@ -7,19 +7,22 @@ import { Badge } from "@/components/ui/badge";
 import { PostCard } from "@/components/blog/post-card";
 import { Reveal } from "@/components/reveal";
 import { categoryBadgeClass } from "@/lib/category-styles";
-import { getPostBySlug, getRelatedPosts, posts } from "@/lib/mock-data";
+import { getPostBySlug, getPosts, getRelatedPosts } from "@/lib/content";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const posts = await getPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
 
   return {
@@ -36,10 +39,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const relatedPosts = getRelatedPosts(post);
+  const relatedPosts = await getRelatedPosts(post);
 
   return (
     <article className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">

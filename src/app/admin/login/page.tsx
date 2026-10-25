@@ -5,10 +5,27 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function resetPassword() {
+    setError(null);
+    setNotice(null);
+    if (!email) {
+      setError("Informe seu e-mail para receber o link de redefinição.");
+      return;
+    }
+    const { error } = await createClient().auth.resetPasswordForEmail(email);
+    if (error) setError(error.message);
+    else setNotice("Enviamos um link de redefinição para o seu e-mail.");
+  }
 
   return (
     <div className="flex min-h-svh items-center justify-center bg-gidib-navy px-4">
@@ -31,10 +48,22 @@ export default function AdminLoginPage() {
 
         <form
           className="mt-6 flex flex-col gap-4"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
             setLoading(true);
-            router.push("/admin");
+            setError(null);
+            setNotice(null);
+            const { error } = await createClient().auth.signInWithPassword({
+              email,
+              password,
+            });
+            if (error) {
+              setError("E-mail ou senha inválidos.");
+              setLoading(false);
+              return;
+            }
+            router.replace("/admin");
+            router.refresh();
           }}
         >
           <div className="flex flex-col gap-1.5">
@@ -48,6 +77,9 @@ export default function AdminLoginPage() {
               id="email"
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               placeholder="voce@gidib.org.br"
               className="focus-visible:border-gidib-green"
             />
@@ -64,10 +96,24 @@ export default function AdminLoginPage() {
               id="password"
               type="password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               placeholder="••••••••"
               className="focus-visible:border-gidib-green"
             />
           </div>
+
+          {error && (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          )}
+          {notice && (
+            <p role="status" className="text-sm text-gidib-green">
+              {notice}
+            </p>
+          )}
 
           <Button
             type="submit"
@@ -79,16 +125,13 @@ export default function AdminLoginPage() {
 
           <button
             type="button"
+            onClick={resetPassword}
             className="text-center text-sm text-muted-foreground hover:text-gidib-green"
           >
             Esqueci minha senha
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          Tela de demonstração — a autenticação real via Supabase Auth entra
-          quando o backend estiver conectado.
-        </p>
       </div>
     </div>
   );

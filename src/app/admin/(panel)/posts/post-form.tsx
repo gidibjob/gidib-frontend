@@ -4,11 +4,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { slugify } from "@/lib/admin-store";
-import { categories } from "@/lib/mock-data";
+import { ImageField } from "@/components/admin/image-field";
+import { slugify, useAdminCategories } from "@/lib/admin-store";
 import type { AdminPost } from "@/types/admin";
 import { postStatusLabels } from "@/types/admin";
-import type { PostCategory } from "@/types/content";
 
 const STATUS_OPTIONS = Object.entries(postStatusLabels) as Array<
   [AdminPost["status"], string]
@@ -16,18 +15,22 @@ const STATUS_OPTIONS = Object.entries(postStatusLabels) as Array<
 
 type Props = {
   initial?: AdminPost;
-  onSubmit: (post: AdminPost) => void;
+  onSubmit: (post: AdminPost) => Promise<void>;
   submitLabel: string;
 };
 
 export function PostForm({ initial, onSubmit, submitLabel }: Props) {
   const router = useRouter();
+  const { items: categories } = useAdminCategories();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(initial));
-  const [category, setCategory] = useState<PostCategory>(
-    initial?.category ?? categories[0]
+  const [chosenCategory, setChosenCategory] = useState(
+    initial?.category ?? ""
   );
+  const category = chosenCategory || categories[0] || "";
   const [author, setAuthor] = useState(initial?.author ?? "Equipe GIDIB");
   const [image, setImage] = useState(initial?.image ?? "");
   const [excerpt, setExcerpt] = useState(initial?.excerpt ?? "");
@@ -47,24 +50,27 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
   return (
     <form
       className="flex flex-col gap-8"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        if (!category) {
+          setError("Cadastre uma categoria antes de criar artigos.");
+          return;
+        }
+        setSaving(true);
+        setError(null);
         const finalSlug = slug.trim() || slugify(title);
-        const now = new Date().toLocaleDateString("pt-BR", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
 
-        onSubmit({
+        try {
+          await onSubmit({
           slug: finalSlug,
           title,
           excerpt,
           category,
           author,
-          date: initial?.date ?? now,
-          readingTime: initial?.readingTime ?? "5 min de leitura",
-          image: image || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&q=80",
+          date: initial?.date ?? "",
+          readingTime: initial?.readingTime ?? "",
+          relatedSlugs: initial?.relatedSlugs,
+          image,
           tags: tags
             .split(",")
             .map((t) => t.trim())
@@ -78,7 +84,11 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
           seoTitle,
           seoDescription,
         });
-        router.push("/admin/posts");
+          router.push("/admin/posts");
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Erro ao salvar.");
+          setSaving(false);
+        }
       }}
     >
       <section className="rounded-xl border border-border bg-card p-5">
@@ -157,7 +167,7 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
             </label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value as PostCategory)}
+              onChange={(e) => setChosenCategory(e.target.value)}
               className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-gidib-green"
             >
               {categories.map((c) => (
@@ -191,13 +201,9 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
 
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label className="text-sm font-medium text-foreground">
-              Imagem (URL)
+              Imagem de capa
             </label>
-            <Input
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="https://..."
-            />
+            <ImageField value={image} onChange={setImage} />
           </div>
         </div>
       </section>
@@ -269,6 +275,12 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
         </div>
       </section>
 
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+
       <div className="flex justify-end gap-3">
         <Button
           type="button"
@@ -279,9 +291,10 @@ export function PostForm({ initial, onSubmit, submitLabel }: Props) {
         </Button>
         <Button
           type="submit"
+          disabled={saving}
           className="btn-hero-primary bg-gidib-green hover:bg-gidib-green-dark"
         >
-          {submitLabel}
+          {saving ? "Salvando..." : submitLabel}
         </Button>
       </div>
     </form>

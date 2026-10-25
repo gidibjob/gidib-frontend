@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import {
   CalendarDays,
+  FolderKanban,
+  Handshake,
   LayoutDashboard,
+  Mail,
   Menu,
   Newspaper,
   Tags,
@@ -16,6 +20,9 @@ const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/posts", label: "Artigos", icon: Newspaper },
   { href: "/admin/events", label: "Eventos", icon: CalendarDays },
+  { href: "/admin/projects", label: "Projetos", icon: FolderKanban },
+  { href: "/admin/partners", label: "Parceiros", icon: Handshake },
+  { href: "/admin/messages", label: "Mensagens", icon: Mail },
   { href: "/admin/categorias", label: "Categorias e tags", icon: Tags },
 ];
 
@@ -25,6 +32,9 @@ function titleForPath(pathname: string) {
   if (pathname.startsWith("/admin/posts")) return "Artigos";
   if (pathname.startsWith("/admin/events/new")) return "Novo evento";
   if (pathname.startsWith("/admin/events")) return "Eventos";
+  if (pathname.startsWith("/admin/projects")) return "Projetos";
+  if (pathname.startsWith("/admin/partners")) return "Parceiros";
+  if (pathname.startsWith("/admin/messages")) return "Mensagens";
   if (pathname.startsWith("/admin/categorias")) return "Categorias e tags";
   return "Admin";
 }
@@ -33,6 +43,13 @@ export function AdminTopbar() {
   const pathname = usePathname();
   const title = titleForPath(pathname);
   const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => setEmail(data.user?.email ?? ""));
+  }, []);
 
   return (
     <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
@@ -52,10 +69,10 @@ export function AdminTopbar() {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 rounded-full border border-border py-1 pl-1 pr-3">
             <div className="flex size-7 items-center justify-center rounded-full bg-gidib-green/10 text-xs font-semibold text-gidib-green">
-              AD
+              {(email[0] ?? "A").toUpperCase()}
             </div>
             <span className="text-sm font-medium text-foreground">
-              Administrador
+              {email || "Administrador"}
             </span>
           </div>
         </div>

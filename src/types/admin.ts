@@ -1,4 +1,4 @@
-import type { Event, Post } from "@/types/content";
+import type { Event, Post, Project } from "@/types/content";
 
 export type PostStatus = "draft" | "scheduled" | "published" | "archived";
 
@@ -27,4 +27,28 @@ export type AdminPost = Post & {
 
 export type AdminEvent = Event & {
   status: EventStatus;
+};
+
+export type AdminProject = Project & {
+  id?: string;
+  sortOrder: number;
+  published: boolean;
+};
+
+export type AdminPartner = {
+  id?: string;
+  name: string;
+  websiteUrl: string;
+  sortOrder: number;
+  published: boolean;
+};
+
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  subject: string | null;
+  message: string;
+  read: boolean;
+  createdAt: string;
 };

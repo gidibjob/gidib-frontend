@@ -28,20 +28,14 @@ const MONTHS = [
 
 type Props = {
   initial?: AdminEvent;
-  onSubmit: (event: AdminEvent) => void;
+  onSubmit: (event: AdminEvent) => Promise<void>;
   submitLabel: string;
 };
 
-function toDateInputValue(day?: string, month?: string) {
-  if (!day || !month) return "";
-  const monthIndex = MONTHS.indexOf(month);
-  if (monthIndex === -1) return "";
-  const year = new Date().getFullYear();
-  return `${year}-${String(monthIndex + 1).padStart(2, "0")}-${day.padStart(2, "0")}`;
-}
-
 export function EventForm({ initial, onSubmit, submitLabel }: Props) {
   const router = useRouter();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(initial));
@@ -49,9 +43,7 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
   const [modality, setModality] = useState<EventModality>(
     initial?.modality ?? "Presencial"
   );
-  const [date, setDate] = useState(
-    toDateInputValue(initial?.day, initial?.month) ?? ""
-  );
+  const [date, setDate] = useState(initial?.date ?? "");
   const [time, setTime] = useState(initial?.time ?? "19:00");
   const [location, setLocation] = useState(initial?.location ?? "");
   const [registrationUrl, setRegistrationUrl] = useState(
@@ -64,25 +56,32 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
   return (
     <form
       className="flex flex-col gap-8"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        setSaving(true);
+        setError(null);
         const finalSlug = slug.trim() || slugify(title);
-        const parsedDate = date ? new Date(`${date}T00:00:00`) : new Date();
+        const [, month, day] = date.split("-");
 
-        onSubmit({
+        try {
+          await onSubmit({
           slug: finalSlug,
           title,
           description,
           modality,
-          date: parsedDate.toISOString().slice(0, 10),
-          day: String(parsedDate.getDate()).padStart(2, "0"),
-          month: MONTHS[parsedDate.getMonth()],
+          date,
+          day,
+          month: MONTHS[Number(month) - 1],
           time,
           location,
           registrationUrl: registrationUrl || "#",
           status,
         });
-        router.push("/admin/events");
+          router.push("/admin/events");
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Erro ao salvar.");
+          setSaving(false);
+        }
       }}
     >
       <section className="rounded-xl border border-border bg-card p-5">
@@ -219,6 +218,12 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
         </div>
       </section>
 
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+
       <div className="flex justify-end gap-3">
         <Button
           type="button"
@@ -229,9 +234,10 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
         </Button>
         <Button
           type="submit"
+          disabled={saving}
           className="btn-hero-primary bg-gidib-green hover:bg-gidib-green-dark"
         >
-          {submitLabel}
+          {saving ? "Salvando..." : submitLabel}
         </Button>
       </div>
     </form>
