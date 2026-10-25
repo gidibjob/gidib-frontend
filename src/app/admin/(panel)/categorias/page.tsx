@@ -90,7 +90,7 @@ export default function AdminCategoriasPage() {
   const tags = useAdminTags();
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6">
+    <div className="grid items-start gap-6 lg:grid-cols-2">
       <ManagedList
         title="Categorias"
         description="Usadas para organizar artigos e projetos no site."

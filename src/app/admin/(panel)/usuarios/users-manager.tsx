@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { KeyRound, Trash2, UserPlus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { KeyRound, Search, Trash2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +19,14 @@ const ROLE_LABELS: Record<PanelRole, string> = {
   editor: "Usuário (conteúdo)",
 };
 
+type Filter = "all" | PanelRole;
+
+const FILTERS: Array<{ value: Filter; label: string }> = [
+  { value: "all", label: "Todos" },
+  { value: "admin", label: "Administradores" },
+  { value: "editor", label: "Usuários" },
+];
+
 function formatDate(iso: string | null) {
   return iso ? new Date(iso).toLocaleString("pt-BR") : "Nunca";
 }
@@ -32,6 +40,17 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<PanelRole>("editor");
   const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return users.filter((u) => {
+      if (filter !== "all" && u.role !== filter) return false;
+      return !query || u.email.toLowerCase().includes(query);
+    });
+  }, [users, filter, search]);
 
   const reload = useCallback(async () => {
     const result = await listUsers();
@@ -62,25 +81,62 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
       setEmail("");
       setPassword("");
       setRole("editor");
+      setShowForm(false);
     }
   }
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                filter === f.value
+                  ? "border-gidib-green bg-gidib-green text-white"
+                  : "border-border bg-background text-muted-foreground hover:border-gidib-green hover:text-gidib-green"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por e-mail..."
+              className="pl-9"
+            />
+          </div>
+          <Button
+            className="gap-2 bg-gidib-green hover:bg-gidib-green-dark"
+            onClick={() => setShowForm((v) => !v)}
+          >
+            <UserPlus className="size-4" />
+            Novo usuário
+          </Button>
+        </div>
+      </div>
+
+      {showForm && (
       <form
         onSubmit={handleCreate}
         className="rounded-xl border border-border bg-card p-5"
       >
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <UserPlus className="size-4 text-gidib-green" />
-          Novo usuário
-        </h2>
+        <h2 className="text-sm font-semibold text-foreground">Novo usuário</h2>
         <p className="mt-1 text-xs text-muted-foreground">
           Administradores gerenciam conteúdo e usuários. Usuários comuns
           gerenciam apenas o conteúdo do site.
         </p>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium">E-mail</label>
             <Input
@@ -127,6 +183,7 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
           </Button>
         </div>
       </form>
+      )}
 
       {error && (
         <p role="alert" className="text-sm text-destructive">
@@ -145,7 +202,7 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {users.map((user) => {
+            {filtered.map((user) => {
               const isMe = user.id === currentUserId;
               return (
                 <tr key={user.id} className="hover:bg-muted/30">
@@ -208,7 +265,7 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
                 </tr>
               );
             })}
-            {loaded && users.length === 0 && (
+            {loaded && filtered.length === 0 && (
               <tr>
                 <td
                   colSpan={4}

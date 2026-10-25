@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { ImageField } from "@/components/admin/image-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { slugify, useAdminProjects } from "@/lib/admin-store";
 import type { AdminProject } from "@/types/admin";
+
+type Filter = "all" | "visible" | "hidden";
+
+const FILTERS: Array<{ value: Filter; label: string }> = [
+  { value: "all", label: "Todos" },
+  { value: "visible", label: "Visíveis" },
+  { value: "hidden", label: "Ocultos" },
+];
 
 const EMPTY: AdminProject = {
   slug: "",
@@ -23,6 +31,21 @@ export default function AdminProjectsPage() {
   const [editing, setEditing] = useState<AdminProject | null>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return items.filter((p) => {
+      if (filter === "visible" && !p.published) return false;
+      if (filter === "hidden" && p.published) return false;
+      if (!query) return true;
+      return (
+        p.title.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      );
+    });
+  }, [items, filter, search]);
 
   const isNew = editing !== null && !editing.id;
 
@@ -47,18 +70,46 @@ export default function AdminProjectsPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <div className="flex justify-end">
-        <Button
-          className="gap-2 bg-gidib-green hover:bg-gidib-green-dark"
-          onClick={() => {
-            setFormError(null);
-            setEditing({ ...EMPTY, sortOrder: items.length });
-          }}
-        >
-          <Plus className="size-4" />
-          Novo projeto
-        </Button>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                filter === f.value
+                  ? "border-gidib-green bg-gidib-green text-white"
+                  : "border-border bg-background text-muted-foreground hover:border-gidib-green hover:text-gidib-green"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por título ou categoria..."
+              className="pl-9"
+            />
+          </div>
+          <Button
+            className="gap-2 bg-gidib-green hover:bg-gidib-green-dark"
+            onClick={() => {
+              setFormError(null);
+              setEditing({ ...EMPTY, sortOrder: items.length });
+            }}
+          >
+            <Plus className="size-4" />
+            Novo projeto
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -75,7 +126,7 @@ export default function AdminProjectsPage() {
           <h2 className="text-sm font-semibold text-foreground">
             {isNew ? "Novo projeto" : "Editar projeto"}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label className="text-sm font-medium">Título</label>
               <Input
@@ -176,7 +227,7 @@ export default function AdminProjectsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {items.map((project) => (
+            {filtered.map((project) => (
               <tr key={project.id} className="hover:bg-muted/30">
                 <td className="max-w-xs truncate px-4 py-3 font-medium text-foreground">
                   {project.title}
@@ -216,13 +267,13 @@ export default function AdminProjectsPage() {
                 </td>
               </tr>
             ))}
-            {items.length === 0 && (
+            {filtered.length === 0 && (
               <tr>
                 <td
                   colSpan={4}
                   className="px-4 py-10 text-center text-sm text-muted-foreground"
                 >
-                  Nenhum projeto cadastrado.
+                  Nenhum projeto encontrado.
                 </td>
               </tr>
             )}

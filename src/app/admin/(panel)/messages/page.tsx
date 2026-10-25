@@ -7,7 +7,7 @@ export default function AdminMessagesPage() {
   const { items, hydrated, error, setRead, remove } = useAdminMessages();
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-3">
+    <div className="flex flex-col gap-3">
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}

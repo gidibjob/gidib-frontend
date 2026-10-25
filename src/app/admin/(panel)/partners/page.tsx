@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAdminPartners } from "@/lib/admin-store";
 import type { AdminPartner } from "@/types/admin";
+
+type Filter = "all" | "visible" | "hidden";
+
+const FILTERS: Array<{ value: Filter; label: string }> = [
+  { value: "all", label: "Todos" },
+  { value: "visible", label: "Visíveis" },
+  { value: "hidden", label: "Ocultos" },
+];
 
 const EMPTY: AdminPartner = {
   name: "",
@@ -19,6 +27,17 @@ export default function AdminPartnersPage() {
   const [editing, setEditing] = useState<AdminPartner | null>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return items.filter((p) => {
+      if (filter === "visible" && !p.published) return false;
+      if (filter === "hidden" && p.published) return false;
+      return !query || p.name.toLowerCase().includes(query);
+    });
+  }, [items, filter, search]);
 
   const isNew = editing !== null && !editing.id;
 
@@ -39,18 +58,46 @@ export default function AdminPartnersPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-4">
-      <div className="flex justify-end">
-        <Button
-          className="gap-2 bg-gidib-green hover:bg-gidib-green-dark"
-          onClick={() => {
-            setFormError(null);
-            setEditing({ ...EMPTY, sortOrder: items.length });
-          }}
-        >
-          <Plus className="size-4" />
-          Novo parceiro
-        </Button>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                filter === f.value
+                  ? "border-gidib-green bg-gidib-green text-white"
+                  : "border-border bg-background text-muted-foreground hover:border-gidib-green hover:text-gidib-green"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por nome..."
+              className="pl-9"
+            />
+          </div>
+          <Button
+            className="gap-2 bg-gidib-green hover:bg-gidib-green-dark"
+            onClick={() => {
+              setFormError(null);
+              setEditing({ ...EMPTY, sortOrder: items.length });
+            }}
+          >
+            <Plus className="size-4" />
+            Novo parceiro
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -67,8 +114,8 @@ export default function AdminPartnersPage() {
           <h2 className="text-sm font-semibold text-foreground">
             {isNew ? "Novo parceiro" : "Editar parceiro"}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium">Nome</label>
               <Input
                 required
@@ -143,7 +190,7 @@ export default function AdminPartnersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {items.map((partner) => (
+            {filtered.map((partner) => (
               <tr key={partner.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium text-foreground">
                   {partner.name}
@@ -180,13 +227,13 @@ export default function AdminPartnersPage() {
                 </td>
               </tr>
             ))}
-            {items.length === 0 && (
+            {filtered.length === 0 && (
               <tr>
                 <td
                   colSpan={3}
                   className="px-4 py-10 text-center text-sm text-muted-foreground"
                 >
-                  Nenhum parceiro cadastrado.
+                  Nenhum parceiro encontrado.
                 </td>
               </tr>
             )}
