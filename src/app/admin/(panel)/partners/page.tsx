@@ -152,7 +152,7 @@ export default function AdminPartnersPage() {
                 }
               />
             </div>
-            <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-4">
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label className="text-sm font-medium">Logo (link da imagem)</label>
               <ImageField
                 value={editing.imageUrl}
