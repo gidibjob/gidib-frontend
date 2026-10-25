@@ -13,7 +13,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
 import { Reveal } from "@/components/reveal";
-import { getEvents, getPartners, getPosts } from "@/lib/content";
+import { getPartners, getPosts, getUpcomingEvents } from "@/lib/content";
+import { NoUpcomingEvents } from "@/components/events/no-events";
 import { stats } from "@/lib/mock-data";
 
 export const revalidate = 60;
@@ -51,12 +52,11 @@ const pillars = [
 export default async function Home() {
   const [posts, events, partners] = await Promise.all([
     getPosts(),
-    getEvents(),
+    getUpcomingEvents(),
     getPartners(),
   ]);
   const featuredPosts = posts.slice(0, 3);
-  const today = new Date().toISOString().slice(0, 10);
-  const upcomingEvents = events.filter((e) => e.date >= today).slice(0, 3);
+  const upcomingEvents = events.slice(0, 3);
 
   return (
     <>
@@ -179,18 +179,26 @@ export default async function Home() {
         <h2 className="text-h2 text-foreground">
           Próximos eventos
         </h2>
-        <div className="mt-8 grid gap-4">
-          {upcomingEvents.map((event, i) => (
-            <Reveal key={event.slug} delay={i * 80}>
-              <EventCard event={event} />
-            </Reveal>
-          ))}
-        </div>
-        <div className="mt-10 flex justify-center">
-          <Link href="/eventos" className={buttonVariants({ variant: "outline" })}>
-            Ver todos os eventos
-          </Link>
-        </div>
+        {upcomingEvents.length > 0 ? (
+          <>
+            <div className="mt-8 grid gap-4">
+              {upcomingEvents.map((event, i) => (
+                <Reveal key={event.slug} delay={i * 80}>
+                  <EventCard event={event} />
+                </Reveal>
+              ))}
+            </div>
+            <div className="mt-10 flex justify-center">
+              <Link href="/eventos" className={buttonVariants({ variant: "outline" })}>
+                Ver todos os eventos
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="mt-8">
+            <NoUpcomingEvents />
+          </div>
+        )}
       </section>
 
       {/* Números */}

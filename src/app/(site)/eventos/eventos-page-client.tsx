@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CalendarX2 } from "lucide-react";
 import { EventCard } from "@/components/events/event-card";
+import { NoUpcomingEvents } from "@/components/events/no-events";
 import { Reveal } from "@/components/reveal";
 import type { Event, EventModality } from "@/types/content";
 
@@ -26,6 +27,8 @@ export function EventosPageClient({ events }: { events: Event[] }) {
       (event) => event.modality === (activeFilter as EventModality)
     );
   }, [events, activeFilter]);
+
+  if (events.length === 0) return <NoUpcomingEvents />;
 
   return (
     <>

@@ -93,13 +93,26 @@ export async function getCategories(): Promise<string[]> {
   return (data as { name: string }[]).map((row) => row.name);
 }
 
-export async function getEvents(): Promise<Event[]> {
+// Data de hoje (YYYY-MM-DD) no fuso de Brasília, para o evento do dia continuar
+// visível até a meia-noite daqui, e não do servidor (UTC).
+export function todayInSaoPaulo() {
+  return new Date().toLocaleDateString("en-CA", {
+    timeZone: "America/Sao_Paulo",
+  });
+}
+
+// Só eventos publicados cuja data é hoje ou futura, do mais próximo ao mais distante.
+export async function getUpcomingEvents(): Promise<Event[]> {
+  const today = todayInSaoPaulo();
   const supabase = getClient();
-  if (!supabase) return mock.events;
+  if (!supabase) return mock.events.filter((e) => e.date >= today);
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .order("event_date");
+    .eq("status", "published")
+    .gte("event_date", today)
+    .order("event_date")
+    .order("event_time");
   if (error) fail("eventos", error.message);
   return (data as EventRow[]).map(rowToEvent);
 }

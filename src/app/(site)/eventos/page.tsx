@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getEvents } from "@/lib/content";
+import { getUpcomingEvents } from "@/lib/content";
 import { EventosPageClient } from "./eventos-page-client";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function EventosPage() {
-  const events = await getEvents();
+  const events = await getUpcomingEvents();
 
   return (
     <div className="bg-gidib-navy text-white">
