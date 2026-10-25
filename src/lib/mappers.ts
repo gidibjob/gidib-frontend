@@ -54,6 +54,7 @@ export type PartnerRow = {
   id: string;
   name: string;
   website_url: string | null;
+  image_url: string | null;
   sort_order: number;
   published: boolean;
 };
@@ -198,7 +199,11 @@ export function adminProjectToRow(project: AdminProject) {
 }
 
 export function rowToPartner(row: PartnerRow): Partner {
-  return { name: row.name, websiteUrl: row.website_url ?? undefined };
+  return {
+    name: row.name,
+    websiteUrl: row.website_url ?? undefined,
+    imageUrl: row.image_url ?? undefined,
+  };
 }
 
 export function rowToAdminPartner(row: PartnerRow): AdminPartner {
@@ -206,6 +211,7 @@ export function rowToAdminPartner(row: PartnerRow): AdminPartner {
     id: row.id,
     name: row.name,
     websiteUrl: row.website_url ?? "",
+    imageUrl: row.image_url ?? "",
     sortOrder: row.sort_order,
     published: row.published,
   };
@@ -215,6 +221,7 @@ export function adminPartnerToRow(partner: AdminPartner) {
   return {
     name: partner.name,
     website_url: partner.websiteUrl || null,
+    image_url: partner.imageUrl || null,
     sort_order: partner.sortOrder,
     published: partner.published,
   };

@@ -39,6 +39,7 @@ export type AdminPartner = {
   id?: string;
   name: string;
   websiteUrl: string;
+  imageUrl: string;
   sortOrder: number;
   published: boolean;
 };

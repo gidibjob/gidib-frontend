@@ -1,4 +1,5 @@
 import { ExternalLink, Handshake } from "lucide-react";
+import { RemoteImage } from "@/components/remote-image";
 import { safeExternalUrl } from "@/lib/url";
 import type { Partner } from "@/types/content";
 
@@ -10,9 +11,21 @@ export function PartnerCard({ partner }: { partner: Partner }) {
 
   const content = (
     <>
-      <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-gidib-navy/5 text-gidib-navy transition-colors duration-300 group-hover:bg-gidib-green/10 group-hover:text-gidib-green">
-        <Handshake className="size-5" />
-      </div>
+      {partner.imageUrl ? (
+        <div className="relative size-11 shrink-0 overflow-hidden rounded-lg bg-white">
+          <RemoteImage
+            src={partner.imageUrl}
+            alt=""
+            fill
+            sizes="44px"
+            className="object-contain"
+          />
+        </div>
+      ) : (
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-gidib-navy/5 text-gidib-navy transition-colors duration-300 group-hover:bg-gidib-green/10 group-hover:text-gidib-green">
+          <Handshake className="size-5" />
+        </div>
+      )}
       <p className="text-sm font-semibold text-foreground">{partner.name}</p>
       {href && (
         <span className="ml-auto flex shrink-0 items-center gap-1 text-xs font-medium text-gidib-green">

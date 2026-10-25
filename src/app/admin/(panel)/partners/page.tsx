@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { ImageField } from "@/components/admin/image-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAdminPartners } from "@/lib/admin-store";
@@ -19,6 +20,7 @@ const FILTERS: Array<{ value: Filter; label: string }> = [
 const EMPTY: AdminPartner = {
   name: "",
   websiteUrl: "",
+  imageUrl: "",
   sortOrder: 0,
   published: true,
 };
@@ -150,6 +152,13 @@ export default function AdminPartnersPage() {
                 }
               />
             </div>
+            <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-4">
+              <label className="text-sm font-medium">Logo (link da imagem)</label>
+              <ImageField
+                value={editing.imageUrl}
+                onChange={(imageUrl) => setEditing({ ...editing, imageUrl })}
+              />
+            </div>
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -190,6 +199,8 @@ export default function AdminPartnersPage() {
           <thead className="border-b border-border bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-4 py-3 font-medium">Nome</th>
+              <th className="px-4 py-3 font-medium">Site</th>
+              <th className="px-4 py-3 font-medium">Imagem</th>
               <th className="px-4 py-3 font-medium">Visível</th>
               <th className="px-4 py-3 text-right font-medium">Ações</th>
             </tr>
@@ -199,6 +210,34 @@ export default function AdminPartnersPage() {
               <tr key={partner.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium text-foreground">
                   {partner.name}
+                </td>
+                <td className="max-w-xs px-4 py-3">
+                  {partner.websiteUrl ? (
+                    <a
+                      href={partner.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block truncate text-gidib-green hover:underline"
+                      title={partner.websiteUrl}
+                    >
+                      {partner.websiteUrl}
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {partner.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={partner.imageUrl}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="size-8 rounded border border-border bg-white object-contain"
+                    />
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {partner.published ? "Sim" : "Não"}
@@ -235,7 +274,7 @@ export default function AdminPartnersPage() {
             {filtered.length === 0 && (
               <tr>
                 <td
-                  colSpan={3}
+                  colSpan={5}
                   className="px-4 py-10 text-center text-sm text-muted-foreground"
                 >
                   Nenhum parceiro encontrado.

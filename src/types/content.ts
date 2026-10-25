@@ -40,4 +40,5 @@ export type Project = {
 export type Partner = {
   name: string;
   websiteUrl?: string;
+  imageUrl?: string;
 };
