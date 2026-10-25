@@ -204,6 +204,10 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
           <tbody className="divide-y divide-border">
             {filtered.map((user) => {
               const isMe = user.id === currentUserId;
+              // O admin máximo é intocável para os demais; ele mesmo pode
+              // trocar a senha e excluir a própria conta.
+              const locked = user.isOwner && !isMe;
+              const canDelete = user.isOwner ? isMe : !isMe;
               return (
                 <tr key={user.id} className="hover:bg-muted/30">
                   <td className="px-4 py-3 font-medium text-foreground">
@@ -213,11 +217,16 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
                         (você)
                       </span>
                     )}
+                    {user.isOwner && (
+                      <span className="ml-2 rounded-full bg-gidib-green/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gidib-green">
+                        Admin geral
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={user.role}
-                      disabled={isMe}
+                      disabled={isMe || user.isOwner}
                       onChange={(e) =>
                         void run(() => updateUserRole(user.id, e.target.value))
                       }
@@ -234,13 +243,14 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
                     <div className="flex justify-end gap-1">
                       <button
                         type="button"
+                        disabled={locked}
                         onClick={() => {
                           const next = prompt(
                             `Nova senha para ${user.email} (mínimo 8 caracteres):`
                           );
                           if (next) void run(() => setUserPassword(user.id, next));
                         }}
-                        className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-gidib-green"
+                        className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-gidib-green disabled:pointer-events-none disabled:opacity-40"
                         aria-label="Redefinir senha"
                         title="Redefinir senha"
                       >
@@ -248,9 +258,12 @@ export function UsersManager({ currentUserId }: { currentUserId: string }) {
                       </button>
                       <button
                         type="button"
-                        disabled={isMe}
+                        disabled={!canDelete}
                         onClick={() => {
-                          if (confirm(`Excluir o usuário ${user.email}?`)) {
+                          const message = isMe
+                            ? "Você vai excluir a SUA PRÓPRIA conta de administrador geral e perderá o acesso ao painel. Tem certeza?"
+                            : `Excluir o usuário ${user.email}?`;
+                          if (confirm(message)) {
                             void run(() => deleteUser(user.id));
                           }
                         }}

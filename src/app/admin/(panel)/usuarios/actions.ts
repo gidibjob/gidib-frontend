@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
+import { isOwnerEmail } from "@/lib/owner";
 
 export type PanelRole = "admin" | "editor";
 
@@ -12,13 +13,14 @@ export type PanelUser = {
   role: PanelRole;
   createdAt: string;
   lastSignInAt: string | null;
+  isOwner: boolean;
 };
 
 type Result = { error?: string };
 
 const MIN_PASSWORD = 8;
 
-// Garante que quem chama é admin geral e devolve o id dele.
+// Garante que quem chama é admin geral e devolve o id e se é o admin máximo.
 async function requireSuperAdmin() {
   const supabase = await createClient();
   const {
@@ -34,7 +36,12 @@ async function requireSuperAdmin() {
   if (data?.role !== "admin") {
     throw new Error("Apenas administradores podem gerenciar usuários.");
   }
-  return user.id;
+  return { id: user.id, isOwner: isOwnerEmail(user.email) };
+}
+
+async function isOwnerUser(userId: string) {
+  const { data } = await createServiceClient().auth.admin.getUserById(userId);
+  return isOwnerEmail(data.user?.email);
 }
 
 function message(err: unknown) {
@@ -71,6 +78,7 @@ export async function listUsers(): Promise<{
         role: roleById.get(u.id)!,
         createdAt: u.created_at,
         lastSignInAt: u.last_sign_in_at ?? null,
+        isOwner: isOwnerEmail(u.email),
       }))
       .sort((a, b) => a.email.localeCompare(b.email));
     return { users };
@@ -130,8 +138,11 @@ export async function updateUserRole(
   try {
     const me = await requireSuperAdmin();
     if (!isRole(role)) return { error: "Perfil inválido." };
-    if (userId === me) {
+    if (userId === me.id) {
       return { error: "Você não pode alterar o seu próprio perfil." };
+    }
+    if (await isOwnerUser(userId)) {
+      return { error: "O administrador geral máximo não pode ser alterado." };
     }
 
     const { error } = await createServiceClient()
@@ -152,7 +163,12 @@ export async function setUserPassword(
   password: string
 ): Promise<Result> {
   try {
-    await requireSuperAdmin();
+    const me = await requireSuperAdmin();
+    if (userId !== me.id && (await isOwnerUser(userId))) {
+      return {
+        error: "Apenas o administrador geral máximo altera a própria senha.",
+      };
+    }
     if (password.length < MIN_PASSWORD) {
       return { error: `A senha deve ter ao menos ${MIN_PASSWORD} caracteres.` };
     }
@@ -170,8 +186,15 @@ export async function setUserPassword(
 export async function deleteUser(userId: string): Promise<Result> {
   try {
     const me = await requireSuperAdmin();
-    if (userId === me) {
-      return { error: "Você não pode excluir a sua própria conta." };
+    if (userId === me.id) {
+      // Só o administrador geral máximo pode excluir a própria conta.
+      if (!me.isOwner) {
+        return { error: "Você não pode excluir a sua própria conta." };
+      }
+    } else if (await isOwnerUser(userId)) {
+      return {
+        error: "O administrador geral máximo só pode ser excluído por ele mesmo.",
+      };
     }
     const { error } = await createServiceClient().auth.admin.deleteUser(userId);
     if (error) return { error: error.message };
