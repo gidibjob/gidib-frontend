@@ -45,7 +45,11 @@ export default async function ArticlePage({ params }: Props) {
   const relatedPosts = await getRelatedPosts(post);
 
   return (
-    <article className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <article className="mx-auto max-w-[90rem] px-4 py-10 sm:px-6 lg:px-8">
+      {/* Coluna principal mantém 60rem (a largura de leitura atual); o
+          "Você também pode gostar" entra ao lado, sem estreitar o texto. */}
+      <div className="lg:mx-auto lg:grid lg:w-fit lg:max-w-full lg:grid-cols-[minmax(0,60rem)_17.5rem] lg:gap-x-12">
+      <div className="lg:col-start-1">
       <nav className="text-sm text-muted-foreground">
         <Link href="/" className="hover:text-foreground">
           Início
@@ -80,16 +84,17 @@ export default async function ArticlePage({ params }: Props) {
         />
       </div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_280px]">
-        <div className="flex flex-col gap-4">
-          {post.content.map((paragraph, i) => (
-            <p key={i} className="text-base leading-relaxed text-foreground/90">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+      </div>
 
-        <aside>
+      <div className="mt-10 flex flex-col gap-4 lg:col-start-1 lg:row-start-2">
+        {post.content.map((paragraph, i) => (
+          <p key={i} className="text-base leading-relaxed text-foreground/90">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+
+      <aside className="mt-10 lg:col-start-2 lg:row-start-2 lg:self-start lg:sticky lg:top-24">
           <h2 className="text-sm font-semibold text-foreground">
             Você também pode gostar
           </h2>
@@ -104,10 +109,9 @@ export default async function ArticlePage({ params }: Props) {
               </Link>
             ))}
           </div>
-        </aside>
-      </div>
+      </aside>
 
-      <div className="mt-10 flex items-center gap-3 border-t border-border pt-6">
+      <div className="mt-10 flex items-center gap-3 border-t lg:col-start-1 border-border pt-6">
         <span className="text-sm font-medium text-muted-foreground">
           Compartilhar:
         </span>
@@ -132,7 +136,7 @@ export default async function ArticlePage({ params }: Props) {
       </div>
 
       {relatedPosts.length > 0 && (
-        <div className="mt-14">
+        <div className="mt-14 lg:col-start-1">
           <h2 className="text-xl font-bold text-foreground">
             Artigos relacionados
           </h2>
@@ -145,6 +149,7 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         </div>
       )}
+      </div>
     </article>
   );
 }
