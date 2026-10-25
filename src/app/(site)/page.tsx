@@ -13,7 +13,13 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { EventCard } from "@/components/events/event-card";
 import { Reveal } from "@/components/reveal";
-import { getPartners, getPosts, getUpcomingEvents } from "@/lib/content";
+import {
+  getPartners,
+  getPosts,
+  getProjects,
+  getUpcomingEvents,
+} from "@/lib/content";
+import { ProjectCard } from "@/components/projects/project-card";
 import { NoUpcomingEvents } from "@/components/events/no-events";
 import { stats } from "@/lib/mock-data";
 
@@ -50,10 +56,11 @@ const pillars = [
 ];
 
 export default async function Home() {
-  const [posts, events, partners] = await Promise.all([
+  const [posts, events, partners, projects] = await Promise.all([
     getPosts(),
     getUpcomingEvents(),
     getPartners(),
+    getProjects(),
   ]);
   const featuredPosts = posts.slice(0, 3);
   const upcomingEvents = events.slice(0, 3);
@@ -146,6 +153,25 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* Projetos — some da home quando não há nenhum cadastrado */}
+      {projects.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+          <h2 className="text-h2 text-foreground">Nossos projetos</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {projects.slice(0, 3).map((project, i) => (
+              <Reveal key={project.slug} delay={i * 80}>
+                <ProjectCard project={project} />
+              </Reveal>
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center">
+            <Link href="/projetos" className={buttonVariants({ variant: "outline" })}>
+              Ver todos os projetos
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Conteúdos em destaque */}
       <section className="bg-muted/40 py-16">
