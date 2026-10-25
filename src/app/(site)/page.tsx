@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   CalendarDays,
   Cpu,
+  ExternalLink,
   Factory,
   FileText,
   Lightbulb,
@@ -19,6 +20,7 @@ import {
   getProjects,
   getUpcomingEvents,
 } from "@/lib/content";
+import { safeExternalUrl } from "@/lib/url";
 import { ProjectCard } from "@/components/projects/project-card";
 import { stats } from "@/lib/mock-data";
 
@@ -270,14 +272,30 @@ export default async function Home() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
-            {partners.slice(0, 10).map((partner) => (
-              <span
-                key={partner.name}
-                className="text-sm font-semibold text-muted-foreground/70 transition-colors hover:text-gidib-navy"
-              >
-                {partner.name}
-              </span>
-            ))}
+            {partners.slice(0, 10).map((partner) => {
+              const href = safeExternalUrl(partner.websiteUrl);
+              const className =
+                "text-sm font-semibold transition-colors hover:text-gidib-navy";
+              return href ? (
+                <a
+                  key={partner.name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${className} inline-flex items-center gap-1 text-gidib-green hover:underline hover:underline-offset-4`}
+                >
+                  {partner.name}
+                  <ExternalLink className="size-3" aria-hidden />
+                </a>
+              ) : (
+                <span
+                  key={partner.name}
+                  className={`${className} text-muted-foreground/70`}
+                >
+                  {partner.name}
+                </span>
+              );
+            })}
           </div>
 
           <div className="mt-8 flex justify-center">

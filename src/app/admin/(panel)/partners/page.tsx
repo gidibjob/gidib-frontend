@@ -5,6 +5,7 @@ import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAdminPartners } from "@/lib/admin-store";
+import { normalizeExternalUrl } from "@/lib/url";
 import type { AdminPartner } from "@/types/admin";
 
 type Filter = "all" | "visible" | "hidden";
@@ -47,8 +48,12 @@ export default function AdminPartnersPage() {
     setSaving(true);
     setFormError(null);
     try {
-      if (isNew) await create(editing);
-      else await update(editing.id!, editing);
+      const partner = {
+        ...editing,
+        websiteUrl: normalizeExternalUrl(editing.websiteUrl),
+      };
+      if (isNew) await create(partner);
+      else await update(editing.id!, partner);
       setEditing(null);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Erro ao salvar.");
@@ -126,7 +131,7 @@ export default function AdminPartnersPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium">Site</label>
+              <label className="text-sm font-medium">Site (opcional — destaca o parceiro)</label>
               <Input
                 value={editing.websiteUrl}
                 onChange={(e) =>

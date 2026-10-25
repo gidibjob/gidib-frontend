@@ -278,19 +278,6 @@ export function useAdminMessages() {
   return { items, hydrated, error, setRead, remove };
 }
 
-// Envia uma imagem para o bucket público `media` e devolve a URL pública.
-export async function uploadMedia(file: File) {
-  const supabase = createClient();
-  const extension = file.name.split(".").pop()?.toLowerCase() ?? "bin";
-  const path = `${new Date().getFullYear()}/${crypto.randomUUID()}.${extension}`;
-  const { error } = await supabase.storage.from("media").upload(path, file, {
-    contentType: file.type,
-    cacheControl: "31536000",
-  });
-  if (error) throw new Error(describeError(error));
-  return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
-}
-
 export function slugify(value: string) {
   return value
     .normalize("NFD")
