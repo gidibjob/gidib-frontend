@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search, SearchX } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Search, SearchX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/blog/post-card";
 import { Reveal } from "@/components/reveal";
 import type { Post } from "@/types/content";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 12;
 
 export function BlogPageClient({
   posts,
@@ -20,7 +20,8 @@ export function BlogPageClient({
   const FILTERS = ["Todos", ...categories];
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [search, setSearch] = useState("");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(1);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const filteredPosts = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -38,19 +39,31 @@ export function BlogPageClient({
     });
   }, [posts, activeFilter, search]);
 
-  const visiblePosts = filteredPosts.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredPosts.length;
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const visiblePosts = filteredPosts.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  function goToPage(next: number) {
+    setPage(next);
+    listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div
+        ref={listRef}
+        className="flex scroll-mt-24 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
         <div className="flex flex-wrap gap-2">
           {FILTERS.map((filter) => (
             <button
               key={filter}
               onClick={() => {
                 setActiveFilter(filter);
-                setVisibleCount(PAGE_SIZE);
+                setPage(1);
               }}
               className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
                 activeFilter === filter
@@ -69,7 +82,7 @@ export function BlogPageClient({
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setVisibleCount(PAGE_SIZE);
+              setPage(1);
             }}
             placeholder="Buscar artigos..."
             className="pl-9 focus-visible:border-gidib-green"
@@ -80,7 +93,7 @@ export function BlogPageClient({
       {visiblePosts.length > 0 ? (
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {visiblePosts.map((post, i) => (
-            <Reveal key={post.slug} delay={(i % PAGE_SIZE) * 60}>
+            <Reveal key={post.slug} delay={(i % 6) * 60}>
               <PostCard post={post} />
             </Reveal>
           ))}
@@ -96,16 +109,48 @@ export function BlogPageClient({
         </div>
       )}
 
-      {hasMore && (
-        <div className="mt-10 flex justify-center">
+      {totalPages > 1 && (
+        <nav
+          aria-label="Paginação"
+          className="mt-10 flex flex-wrap items-center justify-center gap-2 text-foreground"
+        >
           <Button
             variant="outline"
-            className="hover:border-gidib-green hover:text-gidib-green"
-            onClick={() => setVisibleCount((v) => v + PAGE_SIZE)}
+            className="gap-1 text-foreground hover:border-gidib-green hover:text-gidib-green"
+            disabled={currentPage === 1}
+            onClick={() => goToPage(currentPage - 1)}
           >
-            Carregar mais artigos
+            <ChevronLeft className="size-4" />
+            Anterior
           </Button>
-        </div>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => goToPage(n)}
+              aria-label={`Página ${n}`}
+              aria-current={n === currentPage ? "page" : undefined}
+              className={`size-8 rounded-lg border text-sm font-medium transition-colors ${
+                n === currentPage
+                  ? "border-gidib-green bg-gidib-green text-white"
+                  : "border-border bg-background text-foreground hover:border-gidib-green hover:text-gidib-green"
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+
+          <Button
+            variant="outline"
+            className="gap-1 text-foreground hover:border-gidib-green hover:text-gidib-green"
+            disabled={currentPage === totalPages}
+            onClick={() => goToPage(currentPage + 1)}
+          >
+            Próxima
+            <ChevronRight className="size-4" />
+          </Button>
+        </nav>
       )}
     </>
   );
