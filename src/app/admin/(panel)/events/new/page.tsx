@@ -7,7 +7,7 @@ export default function NewEventPage() {
   const { create } = useAdminEvents();
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <EventForm submitLabel="Criar evento" onSubmit={create} />
     </div>
   );

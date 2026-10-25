@@ -13,7 +13,7 @@ export default function EditPostPage() {
   if (!post) return null;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <PostForm
         initial={post}
         submitLabel="Salvar alterações"

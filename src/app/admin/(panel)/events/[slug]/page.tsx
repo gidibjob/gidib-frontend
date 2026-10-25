@@ -13,7 +13,7 @@ export default function EditEventPage() {
   if (!event) return null;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <EventForm
         initial={event}
         submitLabel="Salvar alterações"

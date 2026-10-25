@@ -55,7 +55,7 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
 
   return (
     <form
-      className="flex flex-col gap-8"
+      className="grid items-start gap-6 lg:grid-cols-3"
       onSubmit={async (e) => {
         e.preventDefault();
         setSaving(true);
@@ -84,6 +84,7 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
         }
       }}
     >
+      <div className="flex flex-col gap-6 lg:col-span-2">
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="text-sm font-semibold text-foreground">Evento</h2>
         <div className="mt-4 grid gap-4">
@@ -200,7 +201,9 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
           </div>
         </div>
       </section>
+      </div>
 
+      <div className="flex flex-col gap-6">
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="text-sm font-semibold text-foreground">Status</h2>
         <div className="mt-4 max-w-xs">
@@ -217,14 +220,15 @@ export function EventForm({ initial, onSubmit, submitLabel }: Props) {
           </select>
         </div>
       </section>
+      </div>
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm text-destructive lg:col-span-3">
           {error}
         </p>
       )}
 
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 lg:col-span-3">
         <Button
           type="button"
           variant="outline"
